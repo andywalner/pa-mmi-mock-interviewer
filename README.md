@@ -133,7 +133,6 @@ pa-mmi-mock-interviewer/
 │   ├── interview/          # Interview components
 │   └── feedback/           # Feedback components
 ├── lib/                     # Utilities and data
-│   ├── schools.ts          # School list
 │   ├── questions.ts        # MMI questions
 │   └── utils.ts            # Helper functions
 ├── types/                   # TypeScript definitions
