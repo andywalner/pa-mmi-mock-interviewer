@@ -43,9 +43,9 @@ export default function InterviewPage() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {session.selectedSchool.name}
+            MMI Practice Interview
           </h1>
-          <p className="text-gray-600">Multiple Mini Interview Practice</p>
+          <p className="text-gray-600">Type your responses to each scenario</p>
         </div>
 
         <ProgressIndicator />

@@ -1,5 +1,5 @@
 export function generateMockFeedback(schoolName: string): string {
-  return `# MMI Interview Evaluation for ${schoolName}
+  return `# MMI Interview Evaluation
 
 ## Overall Score: ⭐⭐⭐⭐ (4.0 / 5.0)
 

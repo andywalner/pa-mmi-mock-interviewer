@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
 
 function formatResponsesForEvaluation(schoolName: string, responses: any[]): string {
   return `
-I am applying to ${schoolName} and have completed a practice MMI interview. Please evaluate my responses to all ${responses.length} stations.
+I have completed a practice MMI interview for PA school admission. Please evaluate my responses to all ${responses.length} stations.
 
 ${responses.map((r, idx) => `
 ---

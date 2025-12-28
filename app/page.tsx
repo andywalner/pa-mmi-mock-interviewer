@@ -1,4 +1,3 @@
-import SchoolSelector from '@/components/landing/SchoolSelector';
 import StartButton from '@/components/landing/StartButton';
 
 export default function LandingPage() {
@@ -18,15 +17,13 @@ export default function LandingPage() {
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold text-gray-900">How It Works</h2>
             <ol className="list-decimal list-inside space-y-2 text-gray-700">
-              <li>Select your PA program from the dropdown</li>
               <li>Complete 5 MMI stations by typing your responses</li>
               <li>Each station has a 7-minute timer (not enforced)</li>
               <li>Get detailed AI feedback on your performance</li>
             </ol>
           </div>
 
-          <div className="border-t border-gray-200 pt-6 space-y-6">
-            <SchoolSelector />
+          <div className="border-t border-gray-200 pt-6">
             <div className="flex justify-center">
               <StartButton />
             </div>

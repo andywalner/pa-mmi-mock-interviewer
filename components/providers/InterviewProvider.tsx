@@ -44,7 +44,15 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
   };
 
   const startInterview = () => {
-    setSession(s => ({ ...s, currentStationIndex: 0, responses: [], isComplete: false }));
+    // Set generic school for API compatibility
+    const genericSchool: School = { id: 'general', name: 'PA Program' };
+    setSession(s => ({
+      ...s,
+      selectedSchool: genericSchool,
+      currentStationIndex: 0,
+      responses: [],
+      isComplete: false
+    }));
   };
 
   const saveResponse = (response: string, timeSpent: number) => {

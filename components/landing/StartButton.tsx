@@ -5,7 +5,7 @@ import { useInterview } from '@/components/providers/InterviewProvider';
 
 export default function StartButton() {
   const router = useRouter();
-  const { session, startInterview } = useInterview();
+  const { startInterview } = useInterview();
 
   const handleStart = () => {
     startInterview();
@@ -15,7 +15,6 @@ export default function StartButton() {
   return (
     <button
       onClick={handleStart}
-      disabled={!session.selectedSchool}
       className="btn-primary text-lg px-8 py-4"
     >
       Start Practice Interview
