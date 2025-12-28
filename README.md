@@ -4,12 +4,13 @@ A Next.js web application for practicing Physician Assistant (PA) Multiple Mini 
 
 ## Features
 
-- **School Selection**: Choose from 5 PA programs
 - **5 MMI Stations**: Practice with realistic interview scenarios
-- **7-Minute Timer**: Visual countdown timer for each station (not enforced)
-- **Text-Based Responses**: Type your responses (simulating spoken answers)
-- **AI Feedback**: Get detailed evaluation using Claude API
+- **Audio Recording Mode**: Record your spoken responses with pause/resume functionality
+- **7-Minute Recording Limit**: Enforced time limit per station (actual recording time)
+- **Text Mode Available**: Toggle to text input mode via environment variable
+- **AI Feedback**: Get detailed evaluation using Claude API (text mode only)
 - **Session Persistence**: Your progress is saved during your session
+- **Cost Controls**: API confirmation dialog and mock responses for testing
 
 ## Tech Stack
 
@@ -70,7 +71,27 @@ CLAUDE_MODEL=claude-sonnet-4-5-20250929
 
 💡 **Tip:** Use Haiku for development/testing, then switch to Sonnet for production!
 
-6. Start the development server:
+6. **(Optional) Configure application mode**:
+
+```bash
+# Enable audio recording mode (default: true)
+NEXT_PUBLIC_ENABLE_AUDIO_MODE=true
+
+# Show API confirmation dialog to prevent accidental costs (default: false)
+NEXT_PUBLIC_ENABLE_API_CONFIRMATION=true
+```
+
+**Audio Mode Notes:**
+- **Enabled (default)**: Users record spoken responses via browser microphone
+- **Disabled**: Users type text responses (useful for quick testing)
+- In audio mode prototype, recordings are stored in memory only (S3 upload + Deepgram transcription to be added)
+
+**API Confirmation Notes:**
+- **Enabled**: Shows dialog before submitting to Claude API with option for mock response
+- **Disabled**: Submits directly to API (production mode)
+- Useful during development to avoid unnecessary API costs
+
+7. Start the development server:
 ```bash
 npm run dev
 ```
@@ -79,15 +100,21 @@ npm run dev
 
 ## Usage
 
-1. **Select Your PA Program**: Choose your school from the dropdown
-2. **Start Interview**: Click "Start Practice Interview"
-3. **Complete 5 Stations**:
+1. **Start Interview**: Click "Start Practice Interview" on the landing page
+2. **Complete 5 Stations**:
    - Read each scenario carefully
-   - Type your response (what you would say in a real interview)
-   - Watch the 7-minute timer (you can continue past it)
-   - Click "Next Station" to proceed
-4. **Get Feedback**: After completing all stations, receive detailed AI feedback
-5. **Start New Interview**: Practice again with a fresh start
+   - **Audio Mode (default)**:
+     - Click "Start Recording" to begin
+     - Speak your response naturally
+     - Use Pause/Resume as needed
+     - Click "Done" when finished (7-minute max enforced)
+     - Preview your recording before continuing
+   - **Text Mode** (if enabled): Type your response
+   - Click "Next Station" to proceed (only enabled after recording/typing)
+3. **Get Feedback**:
+   - **Audio mode**: View your recordings list (transcription/evaluation to be added)
+   - **Text mode**: Receive detailed AI feedback from Claude
+4. **Start New Interview**: Practice again with a fresh start
 
 ## Project Structure
 
@@ -158,6 +185,8 @@ The application uses a professional pink color scheme designed for medical/healt
 |----------|-------------|----------|---------|
 | `ANTHROPIC_API_KEY` | Your Anthropic API key | Yes | - |
 | `CLAUDE_MODEL` | Claude model to use (haiku/sonnet-3.5/sonnet-4.5) | No | `claude-3-5-haiku-20241022` |
+| `NEXT_PUBLIC_ENABLE_API_CONFIRMATION` | Show confirmation dialog before API calls (`true`/`false`) | No | `false` |
+| `NEXT_PUBLIC_ENABLE_AUDIO_MODE` | Enable audio recording mode (`true`/`false`) | No | `true` |
 
 ## MMI Questions
 
@@ -172,15 +201,6 @@ The prototype includes 5 hardcoded MMI scenarios:
 Each station has a 7-minute (420 seconds) time limit for realism.
 
 ## Customization
-
-### Adding More Schools
-Edit `lib/schools.ts`:
-```typescript
-export const SCHOOLS: School[] = [
-  { id: 'new-school', name: 'New School Name' },
-  // ...
-];
-```
 
 ### Changing Questions
 Edit `lib/questions.ts`:
