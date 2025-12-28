@@ -5,6 +5,7 @@ import { formatTime } from '@/lib/utils';
 
 interface AudioRecorderProps {
   onRecordingComplete: (blob: Blob, duration: number) => void;
+  onRecordingCleared?: () => void;
   currentRecording?: { blob: Blob; duration: number } | null;
   maxDuration?: number; // in seconds
   onRecordingStateChange?: (isRecording: boolean) => void;
@@ -12,6 +13,7 @@ interface AudioRecorderProps {
 
 export default function AudioRecorder({
   onRecordingComplete,
+  onRecordingCleared,
   currentRecording,
   maxDuration = 420, // 7 minutes default
   onRecordingStateChange
@@ -169,6 +171,7 @@ export default function AudioRecorder({
     setIsRecording(false);
     setIsPaused(false);
     onRecordingStateChange?.(false);
+    onRecordingCleared?.();
     pausedTimeRef.current = 0;
     chunksRef.current = [];
 

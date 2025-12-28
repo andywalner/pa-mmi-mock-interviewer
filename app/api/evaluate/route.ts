@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
           type: 'text',
           text: systemPrompt,
           cache_control: { type: 'ephemeral' }
-        }
+        } as any // Type assertion for prompt caching (API supports it but types don't yet)
       ],
       messages: [
         {

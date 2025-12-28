@@ -52,6 +52,10 @@ export default function InterviewPage() {
     saveAudioResponse(blob, duration, timeSpent);
   };
 
+  const handleAudioRecordingCleared = () => {
+    setCurrentAudioRecording(null);
+  };
+
   return (
     <main className="min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -65,7 +69,7 @@ export default function InterviewPage() {
         <ProgressIndicator />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className={isAudioMode ? '' : 'lg:col-span-2'}>
+          <div className={isAudioMode ? 'lg:col-span-3' : 'lg:col-span-2'}>
             <StationPrompt question={currentQuestion} />
           </div>
           {!isAudioMode && (
@@ -82,6 +86,7 @@ export default function InterviewPage() {
           {isAudioMode ? (
             <AudioRecorder
               onRecordingComplete={handleAudioRecordingComplete}
+              onRecordingCleared={handleAudioRecordingCleared}
               currentRecording={currentAudioRecording}
               maxDuration={currentQuestion.timeLimit}
               onRecordingStateChange={setIsCurrentlyRecording}

@@ -60,21 +60,35 @@ export default function NavigationButtons({
       </div>
       <div className="flex gap-4">
         {isLastStation ? (
-          <button
-            onClick={handleSubmit}
-            disabled={!hasResponse}
-            className="btn-primary"
-          >
-            Submit Interview
-          </button>
+          <div className="relative group">
+            <button
+              onClick={handleSubmit}
+              disabled={!hasResponse}
+              className="btn-primary"
+            >
+              Submit Interview
+            </button>
+            {!hasResponse && (
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                {statusMessage}
+              </div>
+            )}
+          </div>
         ) : (
-          <button
-            onClick={handleNext}
-            disabled={!hasResponse}
-            className="btn-primary"
-          >
-            Next Station →
-          </button>
+          <div className="relative group">
+            <button
+              onClick={handleNext}
+              disabled={!hasResponse}
+              className="btn-primary"
+            >
+              Next Station →
+            </button>
+            {!hasResponse && (
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                {statusMessage}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
