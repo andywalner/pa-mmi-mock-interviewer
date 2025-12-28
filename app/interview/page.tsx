@@ -8,16 +8,20 @@ import ProgressIndicator from '@/components/interview/ProgressIndicator';
 import StationTimer from '@/components/interview/StationTimer';
 import StationPrompt from '@/components/interview/StationPrompt';
 import ResponseInput from '@/components/interview/ResponseInput';
+import AudioRecorder from '@/components/interview/AudioRecorder';
 import NavigationButtons from '@/components/interview/NavigationButtons';
 
 export default function InterviewPage() {
   const router = useRouter();
-  const { session } = useInterview();
+  const { session, saveAudioResponse } = useInterview();
   const [timeSpent, setTimeSpent] = useState(0);
   const [currentResponseText, setCurrentResponseText] = useState('');
+  const [currentAudioRecording, setCurrentAudioRecording] = useState<{ blob: Blob; duration: number } | null>(null);
+  const [isCurrentlyRecording, setIsCurrentlyRecording] = useState(false);
 
+  const isAudioMode = process.env.NEXT_PUBLIC_ENABLE_AUDIO_MODE === 'true';
   const currentQuestion = MMI_QUESTIONS[session.currentStationIndex];
-  const savedResponse = session.responses[session.currentStationIndex]?.response || '';
+  const savedResponse = session.responses[session.currentStationIndex];
 
   useEffect(() => {
     if (!session.selectedSchool) {
@@ -27,8 +31,13 @@ export default function InterviewPage() {
 
   useEffect(() => {
     setTimeSpent(0);
-    setCurrentResponseText(savedResponse);
-  }, [session.currentStationIndex, savedResponse]);
+    if (isAudioMode && savedResponse?.audioBlob) {
+      setCurrentAudioRecording({ blob: savedResponse.audioBlob, duration: savedResponse.audioDuration || 0 });
+    } else {
+      setCurrentResponseText(savedResponse?.response || '');
+      setCurrentAudioRecording(null);
+    }
+  }, [session.currentStationIndex, savedResponse, isAudioMode]);
 
   if (!session.selectedSchool || !currentQuestion) {
     return null;
@@ -36,6 +45,11 @@ export default function InterviewPage() {
 
   const handleResponseChange = (value: string) => {
     setCurrentResponseText(value);
+  };
+
+  const handleAudioRecordingComplete = (blob: Blob, duration: number) => {
+    setCurrentAudioRecording({ blob, duration });
+    saveAudioResponse(blob, duration, timeSpent);
   };
 
   return (
@@ -51,24 +65,38 @@ export default function InterviewPage() {
         <ProgressIndicator />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-2">
+          <div className={isAudioMode ? '' : 'lg:col-span-2'}>
             <StationPrompt question={currentQuestion} />
           </div>
-          <div>
-            <StationTimer
-              stationIndex={session.currentStationIndex}
-              onTimeUpdate={setTimeSpent}
-            />
-          </div>
+          {!isAudioMode && (
+            <div>
+              <StationTimer
+                stationIndex={session.currentStationIndex}
+                onTimeUpdate={setTimeSpent}
+              />
+            </div>
+          )}
         </div>
 
         <div className="card">
-          <ResponseInput
-            value={currentResponseText}
-            onChange={handleResponseChange}
-          />
+          {isAudioMode ? (
+            <AudioRecorder
+              onRecordingComplete={handleAudioRecordingComplete}
+              currentRecording={currentAudioRecording}
+              maxDuration={currentQuestion.timeLimit}
+              onRecordingStateChange={setIsCurrentlyRecording}
+            />
+          ) : (
+            <ResponseInput
+              value={currentResponseText}
+              onChange={handleResponseChange}
+            />
+          )}
           <NavigationButtons
             currentResponse={currentResponseText}
+            currentAudioRecording={currentAudioRecording}
+            isAudioMode={isAudioMode}
+            isRecording={isCurrentlyRecording}
             timeSpent={timeSpent}
           />
         </div>

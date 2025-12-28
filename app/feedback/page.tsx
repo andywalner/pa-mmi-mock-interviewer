@@ -6,6 +6,7 @@ import { useInterview } from '@/components/providers/InterviewProvider';
 import LoadingState from '@/components/feedback/LoadingState';
 import FeedbackDisplay from '@/components/feedback/FeedbackDisplay';
 import ConfirmSubmission from '@/components/feedback/ConfirmSubmission';
+import AudioRecordingsList from '@/components/feedback/AudioRecordingsList';
 import { generateMockFeedback } from '@/lib/mockFeedback';
 
 export default function FeedbackPage() {
@@ -16,6 +17,7 @@ export default function FeedbackPage() {
   const [error, setError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
 
+  const isAudioMode = process.env.NEXT_PUBLIC_ENABLE_AUDIO_MODE === 'true';
   const requiresConfirmation = process.env.NEXT_PUBLIC_ENABLE_API_CONFIRMATION === 'true';
 
   useEffect(() => {
@@ -74,6 +76,11 @@ export default function FeedbackPage() {
       handleConfirm(false);
     }
   }, [requiresConfirmation, confirmed, session]);
+
+  // In audio mode (prototype), just show recordings list
+  if (isAudioMode) {
+    return <AudioRecordingsList responses={session.responses} />;
+  }
 
   // Show confirmation screen if required and not yet confirmed
   if (requiresConfirmation && !confirmed) {

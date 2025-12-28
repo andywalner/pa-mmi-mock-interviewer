@@ -13,7 +13,9 @@ export interface MMIQuestion {
 export interface StationResponse {
   stationId: number;
   question: string;
-  response: string;
+  response: string; // Text response (for text mode)
+  audioBlob?: Blob; // Audio recording (for audio mode)
+  audioDuration?: number; // Duration in seconds
   timeSpent: number;
 }
 
@@ -29,6 +31,7 @@ export interface InterviewContextType {
   setSelectedSchool: (school: School) => void;
   startInterview: () => void;
   saveResponse: (response: string, timeSpent: number) => void;
+  saveAudioResponse: (audioBlob: Blob, audioDuration: number, timeSpent: number) => void;
   nextStation: () => void;
   submitInterview: () => void;
   resetInterview: () => void;

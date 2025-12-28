@@ -35,7 +35,15 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (isHydrated && typeof window !== 'undefined') {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+      // Create a serializable version without audio blobs
+      const sessionToStore = {
+        ...session,
+        responses: session.responses.map(r => ({
+          ...r,
+          audioBlob: undefined // Exclude blobs from storage
+        }))
+      };
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(sessionToStore));
     }
   }, [session, isHydrated]);
 
@@ -71,6 +79,24 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const saveAudioResponse = (audioBlob: Blob, audioDuration: number, timeSpent: number) => {
+    const currentQuestion = MMI_QUESTIONS[session.currentStationIndex];
+    const stationResponse: StationResponse = {
+      stationId: currentQuestion.id,
+      question: currentQuestion.prompt,
+      response: '', // Empty for audio mode
+      audioBlob,
+      audioDuration,
+      timeSpent
+    };
+
+    setSession(s => {
+      const updatedResponses = [...s.responses];
+      updatedResponses[s.currentStationIndex] = stationResponse;
+      return { ...s, responses: updatedResponses };
+    });
+  };
+
   const nextStation = () => {
     setSession(s => ({
       ...s,
@@ -94,6 +120,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     setSelectedSchool,
     startInterview,
     saveResponse,
+    saveAudioResponse,
     nextStation,
     submitInterview,
     resetInterview
