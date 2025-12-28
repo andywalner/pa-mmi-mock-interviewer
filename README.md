@@ -46,7 +46,31 @@ cp .env.local.example .env.local
 ANTHROPIC_API_KEY=sk-ant-api03-your-actual-key-here
 ```
 
-5. Start the development server:
+5. **(Optional) Choose your Claude model** for cost/quality tradeoff:
+
+By default, the app uses **Claude Haiku 3.5** (cheapest, great for testing). You can override this in `.env.local`:
+
+```bash
+# For testing (default, 75% cheaper):
+CLAUDE_MODEL=claude-3-5-haiku-20241022
+
+# For better quality (balanced):
+CLAUDE_MODEL=claude-3-5-sonnet-20241022
+
+# For best quality (most expensive):
+CLAUDE_MODEL=claude-sonnet-4-5-20250929
+```
+
+**Cost Comparison (per 1M tokens):**
+| Model | Input | Output | Quality | Speed |
+|-------|-------|--------|---------|-------|
+| **Haiku 3.5** | $0.80 | $4.00 | Good | ⚡⚡⚡ |
+| **Sonnet 3.5** | $3.00 | $15.00 | Great | ⚡⚡ |
+| **Sonnet 4.5** | $3.00 | $15.00 | Excellent | ⚡ |
+
+💡 **Tip:** Use Haiku for development/testing, then switch to Sonnet for production!
+
+6. Start the development server:
 ```bash
 npm run dev
 ```
@@ -119,8 +143,9 @@ The application uses a professional pink color scheme designed for medical/healt
 - Cannot proceed without typing a response
 
 ### AI Evaluation
-- Uses Claude Sonnet 4.5 model
+- Uses configurable Claude model (defaults to Haiku 3.5 for cost-effective testing)
 - Reads evaluation criteria from `instructions.md`
+- Prompt caching enabled (90% discount on repeated system prompts)
 - Provides comprehensive feedback on:
   - Communication skills
   - Critical thinking
@@ -129,9 +154,10 @@ The application uses a professional pink color scheme designed for medical/healt
 
 ## Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `ANTHROPIC_API_KEY` | Your Anthropic API key | Yes |
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `ANTHROPIC_API_KEY` | Your Anthropic API key | Yes | - |
+| `CLAUDE_MODEL` | Claude model to use (haiku/sonnet-3.5/sonnet-4.5) | No | `claude-3-5-haiku-20241022` |
 
 ## MMI Questions
 

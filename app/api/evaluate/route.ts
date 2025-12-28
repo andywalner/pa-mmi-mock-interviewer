@@ -31,8 +31,11 @@ export async function POST(request: NextRequest) {
 
     const userMessage = formatResponsesForEvaluation(school.name, responses);
 
+    // Use Haiku for testing (cheap), Sonnet for production
+    const model = process.env.CLAUDE_MODEL || 'claude-3-5-haiku-20241022';
+
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20250929',
+      model,
       max_tokens: 4096,
       system: [
         {
