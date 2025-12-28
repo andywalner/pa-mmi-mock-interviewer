@@ -71,18 +71,6 @@ export default function LoadingState() {
           </p>
         </div>
 
-        {/* Progress Indicator */}
-        <div className="space-y-3">
-          <div className="progress-bar max-w-md mx-auto">
-            <div className="progress-fill animate-pulse" style={{ width: '70%' }}></div>
-          </div>
-          <div className="flex justify-center gap-2">
-            <div className="w-2 h-2 bg-medical-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-medical-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-medical-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-          </div>
-        </div>
-
         {/* Subtle encouragement */}
         <p className="text-sm text-gray-500 italic">
           Meanwhile, take a deep breath. You&apos;ve got this! 💪
