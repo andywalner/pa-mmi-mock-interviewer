@@ -17,6 +17,9 @@ export interface StationResponse {
   audioBlob?: Blob; // Audio recording (for audio mode)
   audioDuration?: number; // Duration in seconds
   timeSpent: number;
+  transcription?: string; // Transcribed text from Deepgram
+  transcriptionStatus?: 'pending' | 'completed' | 'error'; // Transcription status
+  transcriptionError?: string; // Error message if transcription failed
 }
 
 export interface InterviewSession {
@@ -32,6 +35,7 @@ export interface InterviewContextType {
   startInterview: () => void;
   saveResponse: (response: string, timeSpent: number) => void;
   saveAudioResponse: (audioBlob: Blob, audioDuration: number, timeSpent: number) => void;
+  updateTranscription: (stationIndex: number, transcription: string, error?: string) => void;
   nextStation: () => void;
   submitInterview: () => void;
   resetInterview: () => void;

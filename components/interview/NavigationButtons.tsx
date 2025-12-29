@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useInterview } from '@/components/providers/InterviewProvider';
 import { MMI_QUESTIONS } from '@/lib/questions';
+import { transcribeAudio } from '@/lib/transcriptionService';
 
 interface NavigationButtonsProps {
   currentResponse: string;
@@ -20,7 +21,7 @@ export default function NavigationButtons({
   timeSpent
 }: NavigationButtonsProps) {
   const router = useRouter();
-  const { session, saveResponse, nextStation, submitInterview } = useInterview();
+  const { session, saveResponse, updateTranscription, nextStation, submitInterview } = useInterview();
 
   const isLastStation = session.currentStationIndex === MMI_QUESTIONS.length - 1;
 
@@ -34,7 +35,26 @@ export default function NavigationButtons({
     if (!isAudioMode) {
       saveResponse(currentResponse, timeSpent);
     }
-    // Audio is already saved via saveAudioResponse in parent
+
+    // Trigger async transcription if audio mode
+    if (isAudioMode && currentAudioRecording) {
+      const stationIndex = session.currentStationIndex;
+
+      // Mark as pending immediately
+      updateTranscription(stationIndex, '');
+
+      // Fire-and-forget async transcription
+      transcribeAudio(stationIndex, currentAudioRecording.blob)
+        .then(transcription => {
+          if (transcription) {
+            updateTranscription(stationIndex, transcription);
+          } else {
+            updateTranscription(stationIndex, '', 'Transcription failed');
+          }
+        });
+    }
+
+    // Move to next station (don't wait for transcription)
     nextStation();
   };
 
@@ -42,7 +62,26 @@ export default function NavigationButtons({
     if (!isAudioMode) {
       saveResponse(currentResponse, timeSpent);
     }
-    // Audio is already saved via saveAudioResponse in parent
+
+    // Trigger async transcription for last station if audio mode
+    if (isAudioMode && currentAudioRecording) {
+      const stationIndex = session.currentStationIndex;
+
+      // Mark as pending immediately
+      updateTranscription(stationIndex, '');
+
+      // Fire-and-forget async transcription
+      transcribeAudio(stationIndex, currentAudioRecording.blob)
+        .then(transcription => {
+          if (transcription) {
+            updateTranscription(stationIndex, transcription);
+          } else {
+            updateTranscription(stationIndex, '', 'Transcription failed');
+          }
+        });
+    }
+
+    // Submit interview and navigate to feedback (don't wait for transcription)
     submitInterview();
     router.push('/feedback');
   };

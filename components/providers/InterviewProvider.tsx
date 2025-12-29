@@ -97,6 +97,21 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const updateTranscription = (stationIndex: number, transcription: string, error?: string) => {
+    setSession(s => {
+      const updatedResponses = [...s.responses];
+      if (updatedResponses[stationIndex]) {
+        updatedResponses[stationIndex] = {
+          ...updatedResponses[stationIndex],
+          transcription,
+          transcriptionStatus: error ? 'error' : (transcription ? 'completed' : 'pending'),
+          transcriptionError: error
+        };
+      }
+      return { ...s, responses: updatedResponses };
+    });
+  };
+
   const nextStation = () => {
     setSession(s => ({
       ...s,
@@ -121,6 +136,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     startInterview,
     saveResponse,
     saveAudioResponse,
+    updateTranscription,
     nextStation,
     submitInterview,
     resetInterview

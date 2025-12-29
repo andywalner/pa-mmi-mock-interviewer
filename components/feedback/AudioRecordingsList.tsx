@@ -94,11 +94,36 @@ export default function AudioRecordingsList({ responses }: AudioRecordingsListPr
                 )}
 
                 <div className="mt-3 pt-3 border-t border-gray-200">
-                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-r">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Transcription placeholder:</strong> Once Deepgram integration is added, the transcribed text will appear here.
-                    </p>
-                  </div>
+                  {response.transcriptionStatus === 'pending' && (
+                    <div className="bg-blue-50 border-l-4 border-blue-400 p-3 rounded-r">
+                      <p className="text-sm text-blue-800">
+                        <strong>Transcribing...</strong> Please wait while we process your audio.
+                      </p>
+                    </div>
+                  )}
+
+                  {response.transcriptionStatus === 'completed' && response.transcription && (
+                    <div className="bg-green-50 border-l-4 border-green-400 p-3 rounded-r">
+                      <p className="text-sm font-semibold text-green-900 mb-2">Transcription:</p>
+                      <p className="text-sm text-gray-800 whitespace-pre-wrap">{response.transcription}</p>
+                    </div>
+                  )}
+
+                  {response.transcriptionStatus === 'error' && (
+                    <div className="bg-red-50 border-l-4 border-red-400 p-3 rounded-r">
+                      <p className="text-sm text-red-800">
+                        <strong>Transcription failed:</strong> {response.transcriptionError || 'Unknown error'}
+                      </p>
+                    </div>
+                  )}
+
+                  {!response.transcriptionStatus && (
+                    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-r">
+                      <p className="text-sm text-yellow-800">
+                        <strong>No transcription yet.</strong> Transcription is triggered when you navigate to the next station.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
