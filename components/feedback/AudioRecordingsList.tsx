@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { StationResponse } from '@/types';
 import { formatTime } from '@/lib/utils';
+import { useDevSettings } from '@/components/providers/DevSettingsProvider';
 
 interface AudioRecordingsListProps {
   responses: StationResponse[];
@@ -10,6 +11,7 @@ interface AudioRecordingsListProps {
 
 export default function AudioRecordingsList({ responses }: AudioRecordingsListProps) {
   const [audioUrls, setAudioUrls] = useState<string[]>([]);
+  const { settings } = useDevSettings();
 
   useEffect(() => {
     // Create object URLs for audio blobs
@@ -56,12 +58,22 @@ export default function AudioRecordingsList({ responses }: AudioRecordingsListPr
           </div>
 
           <div className="bg-medical-50 border-l-4 border-medical-500 p-4 rounded-r-lg mb-6">
-            <h3 className="font-semibold text-medical-900 mb-2">Next Steps (To be implemented):</h3>
-            <ol className="text-sm text-medical-800 space-y-1 list-decimal list-inside">
-              <li>Upload audio files to S3</li>
-              <li>Bulk transcribe using Deepgram API</li>
-              <li>Submit transcriptions to Claude for evaluation</li>
-            </ol>
+            <h3 className="font-semibold text-medical-900 mb-2">API Status:</h3>
+            <div className="text-sm text-medical-800 space-y-2">
+              <div className="flex items-center">
+                <span className={`w-2 h-2 rounded-full mr-2 ${settings.enableDeepgram ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+                <span>Deepgram Transcription: {settings.enableDeepgram ? 'Enabled ✓' : 'Disabled (Dev Mode)'}</span>
+              </div>
+              <div className="flex items-center">
+                <span className={`w-2 h-2 rounded-full mr-2 ${settings.enableClaude ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+                <span>Claude AI Evaluation: {settings.enableClaude ? 'Enabled ✓' : 'Disabled (Dev Mode)'}</span>
+              </div>
+            </div>
+            {!settings.enableClaude && (
+              <p className="text-sm text-medical-700 mt-3 italic">
+                Claude evaluation is disabled. Enable it in Dev Settings to get AI feedback on your transcriptions.
+              </p>
+            )}
           </div>
 
           <div className="space-y-4">

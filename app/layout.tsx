@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { InterviewProvider } from '@/components/providers/InterviewProvider'
+import { DevSettingsProvider } from '@/components/providers/DevSettingsProvider'
+import DevSettingsPanel from '@/components/dev/DevSettingsPanel'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,9 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <InterviewProvider>
-          {children}
-        </InterviewProvider>
+        <DevSettingsProvider>
+          <InterviewProvider>
+            <DevSettingsPanel />
+            {children}
+          </InterviewProvider>
+        </DevSettingsProvider>
       </body>
     </html>
   )

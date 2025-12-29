@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useInterview } from '@/components/providers/InterviewProvider';
+import { useDevSettings } from '@/components/providers/DevSettingsProvider';
 import { MMI_QUESTIONS } from '@/lib/questions';
 import { transcribeAudio } from '@/lib/transcriptionService';
 
@@ -22,6 +23,7 @@ export default function NavigationButtons({
 }: NavigationButtonsProps) {
   const router = useRouter();
   const { session, saveResponse, updateTranscription, nextStation, submitInterview } = useInterview();
+  const { settings } = useDevSettings();
 
   const isLastStation = session.currentStationIndex === MMI_QUESTIONS.length - 1;
 
@@ -36,8 +38,8 @@ export default function NavigationButtons({
       saveResponse(currentResponse, timeSpent);
     }
 
-    // Trigger async transcription if audio mode
-    if (isAudioMode && currentAudioRecording) {
+    // Trigger async transcription if audio mode AND Deepgram is enabled
+    if (isAudioMode && currentAudioRecording && settings.enableDeepgram) {
       const stationIndex = session.currentStationIndex;
 
       // Mark as pending immediately
@@ -63,8 +65,8 @@ export default function NavigationButtons({
       saveResponse(currentResponse, timeSpent);
     }
 
-    // Trigger async transcription for last station if audio mode
-    if (isAudioMode && currentAudioRecording) {
+    // Trigger async transcription for last station if audio mode AND Deepgram is enabled
+    if (isAudioMode && currentAudioRecording && settings.enableDeepgram) {
       const stationIndex = session.currentStationIndex;
 
       // Mark as pending immediately
