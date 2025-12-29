@@ -38,7 +38,8 @@ export default function FeedbackPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           school: session.selectedSchool,
-          responses: session.responses
+          responses: session.responses,
+          model: settings.claudeModel // Pass model selection to API
         })
       });
 

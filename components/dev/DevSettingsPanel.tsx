@@ -31,6 +31,10 @@ export default function DevSettingsPanel() {
             <span className={`w-1.5 h-1.5 rounded-full ${settings.enableClaude ? 'bg-medical-500' : 'bg-gray-400'}`}></span>
             <span>Claude: {settings.enableClaude ? 'On' : 'Off'}</span>
           </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-medical-500"></span>
+            <span>Model: {settings.claudeModel === 'haiku' ? 'Haiku' : settings.claudeModel === 'opus' ? 'Opus' : 'Sonnet'}</span>
+          </div>
         </div>
       </button>
 
@@ -115,23 +119,23 @@ export default function DevSettingsPanel() {
                 </label>
               </div>
 
-              {/* Current Status Summary */}
-              <div className="bg-gray-100 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-900 mb-2 text-sm">Current Settings:</h4>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  <li className="flex items-center">
-                    <span className={`w-2 h-2 rounded-full mr-2 ${settings.enableAudioMode ? 'bg-medical-500' : 'bg-gray-400'}`}></span>
-                    Audio Mode: {settings.enableAudioMode ? 'Enabled' : 'Disabled'}
-                  </li>
-                  <li className="flex items-center">
-                    <span className={`w-2 h-2 rounded-full mr-2 ${settings.enableDeepgram ? 'bg-medical-500' : 'bg-gray-400'}`}></span>
-                    Deepgram: {settings.enableDeepgram ? 'Enabled' : 'Disabled'}
-                  </li>
-                  <li className="flex items-center">
-                    <span className={`w-2 h-2 rounded-full mr-2 ${settings.enableClaude ? 'bg-medical-500' : 'bg-gray-400'}`}></span>
-                    Claude: {settings.enableClaude ? 'Enabled' : 'Disabled'}
-                  </li>
-                </ul>
+              {/* Claude Model Selector */}
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="mb-3">
+                  <h3 className="font-semibold text-gray-900">Claude Model</h3>
+                  <p className="text-sm text-gray-600">
+                    Choose model for evaluation (affects cost and quality)
+                  </p>
+                </div>
+                <select
+                  value={settings.claudeModel}
+                  onChange={(e) => updateSettings({ claudeModel: e.target.value as 'haiku' | 'sonnet' | 'opus' })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500 bg-white text-sm text-gray-900"
+                >
+                  <option value="haiku">Haiku 4.5 (Cheap)</option>
+                  <option value="sonnet">Sonnet 4.5 (Default)</option>
+                  <option value="opus">Opus 4.5 (Premium)</option>
+                </select>
               </div>
             </div>
 

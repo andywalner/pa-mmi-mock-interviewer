@@ -3,10 +3,12 @@ import Anthropic from '@anthropic-ai/sdk';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { EvaluationRequest } from '@/types';
+import { ClaudeModel } from '@/components/providers/DevSettingsProvider';
+import { getClaudeModelId } from '@/lib/claudeModels';
 
 export async function POST(request: NextRequest) {
   try {
-    const { school, responses }: EvaluationRequest = await request.json();
+    const { school, responses, model }: EvaluationRequest & { model?: ClaudeModel } = await request.json();
 
     if (!school || !responses || responses.length === 0) {
       return NextResponse.json(
@@ -31,11 +33,11 @@ export async function POST(request: NextRequest) {
 
     const userMessage = formatResponsesForEvaluation(school.name, responses);
 
-    // Use Haiku for testing (cheap), Sonnet for production
-    const model = process.env.CLAUDE_MODEL || 'claude-3-5-haiku-20241022';
+    // Use model from dev settings, fallback to env variable, then default to Sonnet 4.5
+    const selectedModel = model ? getClaudeModelId(model) : (process.env.CLAUDE_MODEL || 'claude-sonnet-4-5-20250929');
 
     const message = await anthropic.messages.create({
-      model,
+      model: selectedModel,
       max_tokens: 4096,
       system: [
         {

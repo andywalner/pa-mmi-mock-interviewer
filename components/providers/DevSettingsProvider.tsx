@@ -2,10 +2,13 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+export type ClaudeModel = 'haiku' | 'sonnet' | 'opus';
+
 interface DevSettings {
   enableAudioMode: boolean;
   enableDeepgram: boolean;
   enableClaude: boolean;
+  claudeModel: ClaudeModel;
 }
 
 interface DevSettingsContextType {
@@ -17,7 +20,8 @@ interface DevSettingsContextType {
 const defaultSettings: DevSettings = {
   enableAudioMode: true,
   enableDeepgram: true,
-  enableClaude: true
+  enableClaude: true,
+  claudeModel: 'sonnet' // Default to Sonnet 4.5
 };
 
 const STORAGE_KEY = 'dev_settings';
