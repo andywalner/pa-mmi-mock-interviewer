@@ -188,7 +188,7 @@ The application uses a professional pink color scheme designed for medical/healt
 - Cannot proceed without typing a response
 
 ### AI Evaluation
-- Uses configurable Claude model (defaults to Haiku 3.5 for cost-effective testing)
+- Uses configurable Claude model (defaults to Sonnet 4.5, selectable via dev settings)
 - Reads evaluation criteria from `instructions.md`
 - Prompt caching enabled (90% discount on repeated system prompts)
 - Provides comprehensive feedback on:
@@ -202,7 +202,7 @@ The application uses a professional pink color scheme designed for medical/healt
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
 | `ANTHROPIC_API_KEY` | Your Anthropic API key | Yes | - |
-| `CLAUDE_MODEL` | Claude model to use (haiku/sonnet-3.5/sonnet-4.5) | No | `claude-3-5-haiku-20241022` |
+| `CLAUDE_MODEL` | Override Claude model (use dev settings panel instead) | No | `claude-sonnet-4-5-20250929` |
 | `DEEPGRAM_API_KEY` | Your Deepgram API key for audio transcription | Yes (audio mode) | - |
 | `NEXT_PUBLIC_DEV_MODE` | Show dev settings panel to control input mode and API calls (`true`/`false`) | No | `false` |
 
