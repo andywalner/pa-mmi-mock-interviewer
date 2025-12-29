@@ -31,9 +31,17 @@ export default function InterviewPage() {
 
   useEffect(() => {
     setTimeSpent(0);
-    if (isAudioMode && savedResponse?.audioBlob) {
-      setCurrentAudioRecording({ blob: savedResponse.audioBlob, duration: savedResponse.audioDuration || 0 });
+    setIsCurrentlyRecording(false);
+
+    if (isAudioMode) {
+      // Audio mode: restore saved recording or clear
+      if (savedResponse?.audioBlob) {
+        setCurrentAudioRecording({ blob: savedResponse.audioBlob, duration: savedResponse.audioDuration || 0 });
+      } else {
+        setCurrentAudioRecording(null);
+      }
     } else {
+      // Text mode: restore saved text
       setCurrentResponseText(savedResponse?.response || '');
       setCurrentAudioRecording(null);
     }

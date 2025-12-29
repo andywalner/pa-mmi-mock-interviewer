@@ -37,6 +37,11 @@ export default function AudioRecorder({
       setHasRecording(true);
       setAudioUrl(URL.createObjectURL(currentRecording.blob));
       setRecordedDuration(currentRecording.duration);
+    } else {
+      // Reset state when moving to new station
+      setHasRecording(false);
+      setAudioUrl(null);
+      setRecordedDuration(0);
     }
   }, [currentRecording]);
 
