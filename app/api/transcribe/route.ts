@@ -35,7 +35,8 @@ export async function POST(request: NextRequest) {
         model: 'nova-2',
         smart_format: true,
         language: 'en-US',
-        punctuate: true
+        punctuate: true,
+        filler_words: true  // Include filler words (uh, um, mhmm, etc.) for feedback
       }
     );
 
