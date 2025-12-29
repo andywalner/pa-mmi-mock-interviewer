@@ -83,6 +83,7 @@ export default function InterviewPage() {
           {!isAudioMode && (
             <div>
               <StationTimer
+                key={session.currentStationIndex}
                 stationIndex={session.currentStationIndex}
                 onTimeUpdate={setTimeSpent}
               />
@@ -93,6 +94,7 @@ export default function InterviewPage() {
         <div className="card">
           {isAudioMode ? (
             <AudioRecorder
+              key={session.currentStationIndex}
               onRecordingComplete={handleAudioRecordingComplete}
               onRecordingCleared={handleAudioRecordingCleared}
               currentRecording={currentAudioRecording}
