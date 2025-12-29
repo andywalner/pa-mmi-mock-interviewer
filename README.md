@@ -42,9 +42,14 @@ npm install
 cp .env.local.example .env.local
 ```
 
-4. Add your Anthropic API key to `.env.local`:
-```
+4. Add your API keys to `.env.local`:
+```bash
+# Required: Anthropic API Key
 ANTHROPIC_API_KEY=sk-ant-api03-your-actual-key-here
+
+# Required for audio mode: Deepgram API Key
+# Get your API key from: https://console.deepgram.com/
+DEEPGRAM_API_KEY=your-deepgram-api-key-here
 ```
 
 5. **(Optional) Choose your Claude model** for cost/quality tradeoff:
@@ -79,17 +84,26 @@ NEXT_PUBLIC_ENABLE_AUDIO_MODE=true
 
 # Show API confirmation dialog to prevent accidental costs (default: false)
 NEXT_PUBLIC_ENABLE_API_CONFIRMATION=true
+
+# Enable dev settings panel for controlling API calls (default: false)
+NEXT_PUBLIC_DEV_MODE=true
 ```
 
 **Audio Mode Notes:**
 - **Enabled (default)**: Users record spoken responses via browser microphone
 - **Disabled**: Users type text responses (useful for quick testing)
-- In audio mode prototype, recordings are stored in memory only (S3 upload + Deepgram transcription to be added)
+- Recordings are transcribed using Deepgram API when enabled in dev settings
 
 **API Confirmation Notes:**
 - **Enabled**: Shows dialog before submitting to Claude API with option for mock response
 - **Disabled**: Submits directly to API (production mode)
 - Useful during development to avoid unnecessary API costs
+
+**Dev Mode Notes:**
+- **Enabled**: Shows subtle dev settings panel in bottom-right corner
+- Allows toggling Deepgram transcription and Claude evaluation on/off
+- Settings persist in sessionStorage during testing session
+- **Disabled (production)**: No dev panel shown, all APIs enabled by default
 
 7. Start the development server:
 ```bash
@@ -184,8 +198,10 @@ The application uses a professional pink color scheme designed for medical/healt
 |----------|-------------|----------|---------|
 | `ANTHROPIC_API_KEY` | Your Anthropic API key | Yes | - |
 | `CLAUDE_MODEL` | Claude model to use (haiku/sonnet-3.5/sonnet-4.5) | No | `claude-3-5-haiku-20241022` |
+| `DEEPGRAM_API_KEY` | Your Deepgram API key for audio transcription | Yes (audio mode) | - |
 | `NEXT_PUBLIC_ENABLE_API_CONFIRMATION` | Show confirmation dialog before API calls (`true`/`false`) | No | `false` |
 | `NEXT_PUBLIC_ENABLE_AUDIO_MODE` | Enable audio recording mode (`true`/`false`) | No | `true` |
+| `NEXT_PUBLIC_DEV_MODE` | Show dev settings panel to control API calls (`true`/`false`) | No | `false` |
 
 ## MMI Questions
 
