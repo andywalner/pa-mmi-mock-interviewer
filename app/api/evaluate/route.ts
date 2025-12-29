@@ -82,7 +82,7 @@ Question/Scenario:
 ${r.question}
 
 My Response:
-${r.response}
+${r.transcription || r.response}
 
 Time Spent: ${Math.floor(r.timeSpent / 60)} minutes ${r.timeSpent % 60} seconds
 ---

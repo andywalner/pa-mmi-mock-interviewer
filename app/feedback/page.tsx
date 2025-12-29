@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useInterview } from '@/components/providers/InterviewProvider';
+import { useDevSettings } from '@/components/providers/DevSettingsProvider';
 import LoadingState from '@/components/feedback/LoadingState';
 import FeedbackDisplay from '@/components/feedback/FeedbackDisplay';
 import ConfirmSubmission from '@/components/feedback/ConfirmSubmission';
@@ -12,6 +13,7 @@ import { generateMockFeedback } from '@/lib/mockFeedback';
 export default function FeedbackPage() {
   const router = useRouter();
   const { session } = useInterview();
+  const { settings } = useDevSettings();
   const [feedback, setFeedback] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,16 +72,39 @@ export default function FeedbackPage() {
     }
   };
 
-  // Auto-submit if confirmation not required
+  // Auto-submit if confirmation not required (text mode only)
   useEffect(() => {
-    if (!requiresConfirmation && !confirmed && session.isComplete && session.selectedSchool) {
+    if (!isAudioMode && !requiresConfirmation && !confirmed && session.isComplete && session.selectedSchool) {
       handleConfirm(false);
     }
-  }, [requiresConfirmation, confirmed, session]);
+  }, [isAudioMode, requiresConfirmation, confirmed, session]);
 
-  // In audio mode (prototype), just show recordings list
-  if (isAudioMode) {
+  // Auto-submit for audio mode if Claude is enabled
+  useEffect(() => {
+    if (isAudioMode && settings.enableClaude && !confirmed && session.isComplete && !feedback && !loading) {
+      // Check if all responses have transcriptions
+      const allTranscribed = session.responses.every(r => r.transcription || !r.audioBlob);
+      if (allTranscribed) {
+        if (requiresConfirmation) {
+          setConfirmed(false); // Will show confirmation dialog
+        } else {
+          handleConfirm(false); // Auto-submit
+        }
+      }
+    }
+  }, [isAudioMode, settings.enableClaude, confirmed, session, feedback, loading, requiresConfirmation]);
+
+  // In audio mode with Claude disabled, just show recordings list
+  if (isAudioMode && !settings.enableClaude) {
     return <AudioRecordingsList responses={session.responses} />;
+  }
+
+  // In audio mode with Claude enabled but no transcriptions yet, show recordings
+  if (isAudioMode && settings.enableClaude && !confirmed && !feedback && !loading) {
+    const hasTranscriptions = session.responses.some(r => r.transcription);
+    if (!hasTranscriptions) {
+      return <AudioRecordingsList responses={session.responses} />;
+    }
   }
 
   // Show confirmation screen if required and not yet confirmed
