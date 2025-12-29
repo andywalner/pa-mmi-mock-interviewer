@@ -6,9 +6,7 @@ import { useInterview } from '@/components/providers/InterviewProvider';
 import { useDevSettings } from '@/components/providers/DevSettingsProvider';
 import LoadingState from '@/components/feedback/LoadingState';
 import FeedbackDisplay from '@/components/feedback/FeedbackDisplay';
-import ConfirmSubmission from '@/components/feedback/ConfirmSubmission';
 import AudioRecordingsList from '@/components/feedback/AudioRecordingsList';
-import { generateMockFeedback } from '@/lib/mockFeedback';
 
 export default function FeedbackPage() {
   const router = useRouter();
@@ -17,10 +15,8 @@ export default function FeedbackPage() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [confirmed, setConfirmed] = useState(false);
 
   const isAudioMode = process.env.NEXT_PUBLIC_ENABLE_AUDIO_MODE === 'true';
-  const requiresConfirmation = process.env.NEXT_PUBLIC_ENABLE_API_CONFIRMATION === 'true';
 
   useEffect(() => {
     if (!session.selectedSchool || session.responses.length === 0) {
@@ -34,18 +30,8 @@ export default function FeedbackPage() {
     }
   }, [session, router]);
 
-  const handleConfirm = async (useMock: boolean) => {
-    setConfirmed(true);
+  const handleEvaluate = async () => {
     setLoading(true);
-
-    if (useMock) {
-      // Use mock feedback
-      setTimeout(() => {
-        setFeedback(generateMockFeedback(session.selectedSchool?.name || 'Your School'));
-        setLoading(false);
-      }, 2000); // Simulate API delay
-      return;
-    }
 
     // Real API call
     try {
@@ -72,49 +58,56 @@ export default function FeedbackPage() {
     }
   };
 
-  // Auto-submit if confirmation not required (text mode only)
+  // Auto-submit for text mode if Claude is enabled
   useEffect(() => {
-    if (!isAudioMode && !requiresConfirmation && !confirmed && session.isComplete && session.selectedSchool) {
-      handleConfirm(false);
+    if (!isAudioMode && settings.enableClaude && session.isComplete && !feedback && !loading) {
+      handleEvaluate();
     }
-  }, [isAudioMode, requiresConfirmation, confirmed, session]);
+  }, [isAudioMode, settings.enableClaude, session.isComplete, feedback, loading]);
 
-  // Auto-submit for audio mode if Claude is enabled
+  // Auto-submit for audio mode if Claude is enabled and transcriptions are ready
   useEffect(() => {
-    if (isAudioMode && settings.enableClaude && !confirmed && session.isComplete && !feedback && !loading) {
+    if (isAudioMode && settings.enableClaude && session.isComplete && !feedback && !loading) {
       // Check if all responses have transcriptions
       const allTranscribed = session.responses.every(r => r.transcription || !r.audioBlob);
       if (allTranscribed) {
-        if (requiresConfirmation) {
-          setConfirmed(false); // Will show confirmation dialog
-        } else {
-          handleConfirm(false); // Auto-submit
-        }
+        handleEvaluate();
       }
     }
-  }, [isAudioMode, settings.enableClaude, confirmed, session, feedback, loading, requiresConfirmation]);
+  }, [isAudioMode, settings.enableClaude, session.isComplete, session.responses, feedback, loading]);
 
   // In audio mode with Claude disabled, just show recordings list
   if (isAudioMode && !settings.enableClaude) {
     return <AudioRecordingsList responses={session.responses} />;
   }
 
+  // In text mode with Claude disabled, show message
+  if (!isAudioMode && !settings.enableClaude) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="card max-w-md text-center">
+          <div className="text-gray-400 text-5xl mb-4">ℹ️</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Claude Evaluation Disabled</h2>
+          <p className="text-gray-600 mb-6">
+            Enable Claude in Dev Settings to get AI feedback on your responses.
+          </p>
+          <button
+            onClick={() => router.push('/')}
+            className="btn-primary"
+          >
+            Return Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // In audio mode with Claude enabled but no transcriptions yet, show recordings
-  if (isAudioMode && settings.enableClaude && !confirmed && !feedback && !loading) {
+  if (isAudioMode && settings.enableClaude && !feedback && !loading) {
     const hasTranscriptions = session.responses.some(r => r.transcription);
     if (!hasTranscriptions) {
       return <AudioRecordingsList responses={session.responses} />;
     }
-  }
-
-  // Show confirmation screen if required and not yet confirmed
-  if (requiresConfirmation && !confirmed) {
-    return (
-      <ConfirmSubmission
-        onConfirm={handleConfirm}
-        responseCount={session.responses.length}
-      />
-    );
   }
 
   if (loading) {

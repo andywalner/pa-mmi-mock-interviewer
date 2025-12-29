@@ -82,9 +82,6 @@ CLAUDE_MODEL=claude-sonnet-4-5-20250929
 # Enable audio recording mode (default: true)
 NEXT_PUBLIC_ENABLE_AUDIO_MODE=true
 
-# Show API confirmation dialog to prevent accidental costs (default: false)
-NEXT_PUBLIC_ENABLE_API_CONFIRMATION=true
-
 # Enable dev settings panel for controlling API calls (default: false)
 NEXT_PUBLIC_DEV_MODE=true
 ```
@@ -94,15 +91,11 @@ NEXT_PUBLIC_DEV_MODE=true
 - **Disabled**: Users type text responses (useful for quick testing)
 - Recordings are transcribed using Deepgram API when enabled in dev settings
 
-**API Confirmation Notes:**
-- **Enabled**: Shows dialog before submitting to Claude API with option for mock response
-- **Disabled**: Submits directly to API (production mode)
-- Useful during development to avoid unnecessary API costs
-
 **Dev Mode Notes:**
 - **Enabled**: Shows subtle dev settings panel in bottom-right corner
 - Allows toggling Deepgram transcription and Claude evaluation on/off
 - Settings persist in sessionStorage during testing session
+- Prevents accidental API costs during development
 - **Disabled (production)**: No dev panel shown, all APIs enabled by default
 
 7. Start the development server:
@@ -199,7 +192,6 @@ The application uses a professional pink color scheme designed for medical/healt
 | `ANTHROPIC_API_KEY` | Your Anthropic API key | Yes | - |
 | `CLAUDE_MODEL` | Claude model to use (haiku/sonnet-3.5/sonnet-4.5) | No | `claude-3-5-haiku-20241022` |
 | `DEEPGRAM_API_KEY` | Your Deepgram API key for audio transcription | Yes (audio mode) | - |
-| `NEXT_PUBLIC_ENABLE_API_CONFIRMATION` | Show confirmation dialog before API calls (`true`/`false`) | No | `false` |
 | `NEXT_PUBLIC_ENABLE_AUDIO_MODE` | Enable audio recording mode (`true`/`false`) | No | `true` |
 | `NEXT_PUBLIC_DEV_MODE` | Show dev settings panel to control API calls (`true`/`false`) | No | `false` |
 
