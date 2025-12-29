@@ -5,19 +5,23 @@ A Next.js web application for practicing Physician Assistant (PA) Multiple Mini 
 ## Features
 
 - **5 MMI Stations**: Practice with realistic interview scenarios
-- **Audio Recording Mode**: Record your spoken responses with pause/resume functionality
-- **7-Minute Recording Limit**: Enforced time limit per station (actual recording time)
-- **Text Mode Available**: Toggle to text input mode via environment variable
-- **AI Feedback**: Get detailed evaluation using Claude API (text mode only)
-- **Session Persistence**: Your progress is saved during your session
-- **Cost Controls**: API confirmation dialog and mock responses for testing
+- **Audio Recording Mode**: Record your spoken responses with pause/resume functionality (default)
+- **Text Input Mode**: Toggle to text input via dev settings for quick testing
+- **7-Minute Recording Limit**: Enforced auto-stop per station (actual recording time)
+- **AI Feedback**: Get detailed evaluation using Claude API on transcribed or typed responses
+- **Deepgram Transcription**: Automatic speech-to-text with filler word detection
+- **Model Selection**: Choose between Haiku 4.5 (cheap), Sonnet 4.5 (default), or Opus 4.5 (premium)
+- **Session Persistence**: Progress and settings saved during your session
+- **Dev Settings Panel**: Granular control over features and API calls during development
 
 ## Tech Stack
 
 - **Next.js 14** (App Router)
 - **TypeScript**
 - **Tailwind CSS** with custom pink medical theme
-- **Anthropic Claude API** for response evaluation
+- **Anthropic Claude API** (Haiku/Sonnet/Opus 4.5) for response evaluation
+- **Deepgram API** (Nova-2) for speech-to-text transcription
+- **MediaRecorder API** for browser audio recording
 - **React Context API** for state management
 - **sessionStorage** for persistence
 
@@ -52,44 +56,47 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-actual-key-here
 DEEPGRAM_API_KEY=your-deepgram-api-key-here
 ```
 
-5. **(Optional) Choose your Claude model** for cost/quality tradeoff:
+5. **(Optional) Override Claude model** via environment variable:
 
-By default, the app uses **Claude Haiku 3.5** (cheapest, great for testing). You can override this in `.env.local`:
+By default, the app uses **Claude Sonnet 4.5**. When dev mode is enabled, you can select models via the dev settings panel. You can also override via `.env.local`:
 
 ```bash
-# For testing (default, 75% cheaper):
-CLAUDE_MODEL=claude-3-5-haiku-20241022
-
-# For better quality (balanced):
-CLAUDE_MODEL=claude-3-5-sonnet-20241022
-
-# For best quality (most expensive):
-CLAUDE_MODEL=claude-sonnet-4-5-20250929
+# Override default model (optional)
+CLAUDE_MODEL=claude-haiku-4-5-20251001
 ```
 
-**Cost Comparison (per 1M tokens):**
-| Model | Input | Output | Quality | Speed |
-|-------|-------|--------|---------|-------|
-| **Haiku 3.5** | $0.80 | $4.00 | Good | ⚡⚡⚡ |
-| **Sonnet 3.5** | $3.00 | $15.00 | Great | ⚡⚡ |
-| **Sonnet 4.5** | $3.00 | $15.00 | Excellent | ⚡ |
+**Available Models (2025):**
+| Model | Model ID | Input | Output | Use Case |
+|-------|----------|-------|--------|----------|
+| **Haiku 4.5** | `claude-haiku-4-5-20251001` | $1 | $5 | Fast, cheap testing |
+| **Sonnet 4.5** | `claude-sonnet-4-5-20250929` | $3 | $15 | Default, balanced |
+| **Opus 4.5** | `claude-opus-4-5-20251101` | $15 | $75 | Premium quality |
 
-💡 **Tip:** Use Haiku for development/testing, then switch to Sonnet for production!
+💡 **Note:** Model selection is easier via dev settings panel when `NEXT_PUBLIC_DEV_MODE=true`
 
 6. **(Optional) Enable dev settings panel**:
 
 ```bash
-# Enable dev settings panel for controlling input mode and API calls (default: false)
+# Enable dev settings panel for controlling app behavior (default: false)
 NEXT_PUBLIC_DEV_MODE=true
 ```
 
-**Dev Mode Notes:**
-- **Enabled**: Shows subtle dev settings panel in bottom-right corner
-- Allows toggling between audio recording and text input modes
-- Control Deepgram transcription and Claude evaluation on/off
-- Settings persist in sessionStorage during testing session
+**What Dev Mode Controls:**
+
+When **enabled** (NEXT_PUBLIC_DEV_MODE=true):
+- Shows subtle dev settings panel in bottom-right corner
+- Toggle audio recording mode ON/OFF (switch to text input)
+- Toggle Deepgram transcription ON/OFF
+- Toggle Claude AI evaluation ON/OFF
+- Select Claude model (Haiku 4.5 / Sonnet 4.5 / Opus 4.5)
+- Settings persist in sessionStorage during testing
 - Prevents accidental API costs during development
-- **Disabled (production)**: No dev panel shown, defaults to audio mode with all APIs enabled
+
+When **disabled** (production mode):
+- No dev panel shown
+- Defaults: Audio mode ON, Deepgram ON, Claude ON, Model = Sonnet 4.5
+- All features enabled by default
+- Can still override model via `CLAUDE_MODEL` env variable
 
 7. Start the development server:
 ```bash
@@ -101,20 +108,32 @@ npm run dev
 ## Usage
 
 1. **Start Interview**: Click "Start Practice Interview" on the landing page
-2. **Complete 5 Stations**:
+
+2. **(Optional) Configure Dev Settings**: Click the subtle panel in bottom-right corner to:
+   - Toggle between audio recording and text input modes
+   - Enable/disable Deepgram transcription
+   - Enable/disable Claude AI evaluation
+   - Select Claude model (Haiku/Sonnet/Opus)
+
+3. **Complete 5 Stations**:
    - Read each scenario carefully
    - **Audio Mode (default)**:
      - Click "Start Recording" to begin
-     - Speak your response naturally
+     - Speak your response naturally (up to 7 minutes)
      - Use Pause/Resume as needed
-     - Click "Done" when finished (7-minute max enforced)
+     - Auto-stops at 7-minute limit
      - Preview your recording before continuing
-   - **Text Mode** (if enabled): Type your response
+   - **Text Mode** (via dev settings):
+     - Type your response in the text area
+     - No time limit (informational timer only)
    - Click "Next Station" to proceed (only enabled after recording/typing)
-3. **Get Feedback**:
-   - **Audio mode**: View your recordings list (transcription/evaluation to be added)
-   - **Text mode**: Receive detailed AI feedback from Claude
-4. **Start New Interview**: Practice again with a fresh start
+
+4. **Get Feedback**:
+   - View your audio recordings with transcriptions (if Deepgram enabled)
+   - Receive detailed AI feedback from Claude (if Claude enabled)
+   - Review evaluation across all 5 stations
+
+5. **Start New Interview**: Practice again with a fresh start
 
 ## Project Structure
 
