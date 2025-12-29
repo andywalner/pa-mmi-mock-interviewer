@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface DevSettings {
+  enableAudioMode: boolean;
   enableDeepgram: boolean;
   enableClaude: boolean;
 }
@@ -14,6 +15,7 @@ interface DevSettingsContextType {
 }
 
 const defaultSettings: DevSettings = {
+  enableAudioMode: true,
   enableDeepgram: true,
   enableClaude: true
 };

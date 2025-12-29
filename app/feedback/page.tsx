@@ -16,8 +16,6 @@ export default function FeedbackPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isAudioMode = process.env.NEXT_PUBLIC_ENABLE_AUDIO_MODE === 'true';
-
   useEffect(() => {
     if (!session.selectedSchool || session.responses.length === 0) {
       router.push('/');
@@ -58,31 +56,26 @@ export default function FeedbackPage() {
     }
   };
 
-  // Auto-submit for text mode if Claude is enabled
+  // Auto-submit if Claude is enabled and all responses are ready
   useEffect(() => {
-    if (!isAudioMode && settings.enableClaude && session.isComplete && !feedback && !loading) {
-      handleEvaluate();
-    }
-  }, [isAudioMode, settings.enableClaude, session.isComplete, feedback, loading]);
-
-  // Auto-submit for audio mode if Claude is enabled and transcriptions are ready
-  useEffect(() => {
-    if (isAudioMode && settings.enableClaude && session.isComplete && !feedback && !loading) {
-      // Check if all responses have transcriptions
-      const allTranscribed = session.responses.every(r => r.transcription || !r.audioBlob);
-      if (allTranscribed) {
+    if (settings.enableClaude && session.isComplete && !feedback && !loading) {
+      // Check if all responses have text (either typed or transcribed)
+      const allHaveResponses = session.responses.every(r => r.response.trim().length > 0);
+      if (allHaveResponses) {
         handleEvaluate();
       }
     }
-  }, [isAudioMode, settings.enableClaude, session.isComplete, session.responses, feedback, loading]);
+  }, [settings.enableClaude, session.isComplete, session.responses, feedback, loading]);
 
-  // In audio mode with Claude disabled, just show recordings list
-  if (isAudioMode && !settings.enableClaude) {
-    return <AudioRecordingsList responses={session.responses} />;
-  }
+  // If Claude is disabled, show appropriate message
+  if (!settings.enableClaude) {
+    // If there are audio recordings, show them
+    const hasAudioRecordings = session.responses.some(r => r.audioBlob);
+    if (hasAudioRecordings) {
+      return <AudioRecordingsList responses={session.responses} />;
+    }
 
-  // In text mode with Claude disabled, show message
-  if (!isAudioMode && !settings.enableClaude) {
+    // Otherwise show message to enable Claude
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="card max-w-md text-center">
@@ -102,11 +95,15 @@ export default function FeedbackPage() {
     );
   }
 
-  // In audio mode with Claude enabled but no transcriptions yet, show recordings
-  if (isAudioMode && settings.enableClaude && !feedback && !loading) {
-    const hasTranscriptions = session.responses.some(r => r.transcription);
-    if (!hasTranscriptions) {
-      return <AudioRecordingsList responses={session.responses} />;
+  // If Claude is enabled but responses aren't ready yet (e.g., waiting for transcription)
+  if (settings.enableClaude && !feedback && !loading) {
+    const allHaveResponses = session.responses.every(r => r.response.trim().length > 0);
+    if (!allHaveResponses) {
+      // Show recordings list while waiting for transcriptions
+      const hasAudioRecordings = session.responses.some(r => r.audioBlob);
+      if (hasAudioRecordings) {
+        return <AudioRecordingsList responses={session.responses} />;
+      }
     }
   }
 

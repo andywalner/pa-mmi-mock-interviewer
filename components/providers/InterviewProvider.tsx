@@ -103,6 +103,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
       if (updatedResponses[stationIndex]) {
         updatedResponses[stationIndex] = {
           ...updatedResponses[stationIndex],
+          response: transcription || updatedResponses[stationIndex].response, // Copy transcription to response field
           transcription,
           transcriptionStatus: error ? 'error' : (transcription ? 'completed' : 'pending'),
           transcriptionError: error

@@ -76,27 +76,20 @@ CLAUDE_MODEL=claude-sonnet-4-5-20250929
 
 💡 **Tip:** Use Haiku for development/testing, then switch to Sonnet for production!
 
-6. **(Optional) Configure application mode**:
+6. **(Optional) Enable dev settings panel**:
 
 ```bash
-# Enable audio recording mode (default: true)
-NEXT_PUBLIC_ENABLE_AUDIO_MODE=true
-
-# Enable dev settings panel for controlling API calls (default: false)
+# Enable dev settings panel for controlling input mode and API calls (default: false)
 NEXT_PUBLIC_DEV_MODE=true
 ```
 
-**Audio Mode Notes:**
-- **Enabled (default)**: Users record spoken responses via browser microphone
-- **Disabled**: Users type text responses (useful for quick testing)
-- Recordings are transcribed using Deepgram API when enabled in dev settings
-
 **Dev Mode Notes:**
 - **Enabled**: Shows subtle dev settings panel in bottom-right corner
-- Allows toggling Deepgram transcription and Claude evaluation on/off
+- Allows toggling between audio recording and text input modes
+- Control Deepgram transcription and Claude evaluation on/off
 - Settings persist in sessionStorage during testing session
 - Prevents accidental API costs during development
-- **Disabled (production)**: No dev panel shown, all APIs enabled by default
+- **Disabled (production)**: No dev panel shown, defaults to audio mode with all APIs enabled
 
 7. Start the development server:
 ```bash
@@ -192,8 +185,7 @@ The application uses a professional pink color scheme designed for medical/healt
 | `ANTHROPIC_API_KEY` | Your Anthropic API key | Yes | - |
 | `CLAUDE_MODEL` | Claude model to use (haiku/sonnet-3.5/sonnet-4.5) | No | `claude-3-5-haiku-20241022` |
 | `DEEPGRAM_API_KEY` | Your Deepgram API key for audio transcription | Yes (audio mode) | - |
-| `NEXT_PUBLIC_ENABLE_AUDIO_MODE` | Enable audio recording mode (`true`/`false`) | No | `true` |
-| `NEXT_PUBLIC_DEV_MODE` | Show dev settings panel to control API calls (`true`/`false`) | No | `false` |
+| `NEXT_PUBLIC_DEV_MODE` | Show dev settings panel to control input mode and API calls (`true`/`false`) | No | `false` |
 
 ## MMI Questions
 

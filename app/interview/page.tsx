@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useInterview } from '@/components/providers/InterviewProvider';
+import { useDevSettings } from '@/components/providers/DevSettingsProvider';
 import { MMI_QUESTIONS } from '@/lib/questions';
 import ProgressIndicator from '@/components/interview/ProgressIndicator';
 import StationTimer from '@/components/interview/StationTimer';
@@ -13,13 +14,14 @@ import NavigationButtons from '@/components/interview/NavigationButtons';
 
 export default function InterviewPage() {
   const router = useRouter();
-  const { session, saveAudioResponse } = useInterview();
+  const { session, saveResponse, saveAudioResponse } = useInterview();
+  const { settings } = useDevSettings();
   const [timeSpent, setTimeSpent] = useState(0);
   const [currentResponseText, setCurrentResponseText] = useState('');
   const [currentAudioRecording, setCurrentAudioRecording] = useState<{ blob: Blob; duration: number } | null>(null);
   const [isCurrentlyRecording, setIsCurrentlyRecording] = useState(false);
 
-  const isAudioMode = process.env.NEXT_PUBLIC_ENABLE_AUDIO_MODE === 'true';
+  const isAudioMode = settings.enableAudioMode;
   const currentQuestion = MMI_QUESTIONS[session.currentStationIndex];
   const savedResponse = session.responses[session.currentStationIndex];
 
