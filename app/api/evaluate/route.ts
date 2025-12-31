@@ -5,6 +5,7 @@ import { join } from 'path';
 import { EvaluationRequest } from '@/types';
 import { ClaudeModel } from '@/components/providers/DevSettingsProvider';
 import { getClaudeModelId } from '@/lib/claudeModels';
+import { formatTime } from '@/lib/utils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -85,8 +86,7 @@ ${r.question}
 
 My Response:
 ${r.response}
-
-Time Spent: ${Math.floor(r.timeSpent / 60)} minutes ${r.timeSpent % 60} seconds
+${r.audioDuration ? `\n(Spoken response duration: ${formatTime(r.audioDuration)})` : ''}
 ---
 `).join('\n')}
 
