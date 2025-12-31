@@ -281,10 +281,25 @@ Example format:
 
 **Don't inflate scores.** Most responses will fall in the 2-4 star range. That's normal and helpful for applicants.
 
-### **Consider Context**
-- **Station Type Matters**: Role-play stations should be evaluated differently than ethical dilemma discussions
-- **Time Awareness**: Note if response was too brief (<3 min) or too long (>6 min)
-- **First-time vs. Experienced**: Be encouraging but honest
+### **Response Length & Timing Considerations**
+
+For typical 7-8 minute MMI stations:
+
+**Optimal (4-6 minutes):**
+- Thorough yet concise
+- Leaves room for follow-up questions and dialogue
+- Well-structured with clear points
+
+**Too Brief (<3 minutes):**
+- Often indicates surface-level thinking or missing key perspectives
+- Should be noted in Communication Skills or Critical Thinking feedback
+- Example note: "Your response was quite brief (~2 minutes). While being concise is good, you could have explored [the daughter's emotional perspective / ethical considerations] more deeply without rambling."
+
+**Too Long (>6 minutes of continuous talking):**
+- May indicate rambling, lack of structure, or poor self-awareness
+- Deprives interviewer of follow-up opportunity
+- Should be noted in Communication Skills feedback
+- Example note: "Your response used most of the station time, leaving little room for interviewer follow-ups. Practice delivering your main points in 4-5 minutes to allow for dialogue."
 
 ### **Red Flags to Watch For** 🚩
 These should significantly impact scoring:
@@ -321,6 +336,7 @@ These should significantly impact scoring:
 - Understanding of interdisciplinary healthcare team roles (physicians, nurses, PT, OT, social work, specialists, pharmacists)
 - Demonstrating leadership when appropriate without dominating
 - Respecting all healthcare professions without hierarchical language
+- Efficient time management - thorough yet concise responses
 
 ### **Common Weaknesses to Address**
 - Rushing to a conclusion without analysis
@@ -334,6 +350,7 @@ These should significantly impact scoring:
 - Overuse of verbal fillers
 - Not involving appropriate healthcare team members (social work, PT, OT, palliative care, ethics committee)
 - Assuming education solves all problems (often people need emotional support, not just information)
+- Poor time management (too brief or too long)
 
 ### **Tone Guidelines**
 Your feedback should be:
@@ -480,7 +497,8 @@ Your ethical foundation is solid - you clearly understand that patient autonomy 
    - Low scores (below 2.5★): More detailed guidance, very specific action steps, extra encouragement
 6. **Watch for safety issues** - If response suggests patient harm, be very direct about this in ethical reasoning category
 7. **Watch for major red flags** - Note any diminishing language about other professions, misunderstanding of PA role, or purely lifestyle-driven motivations
-8. **Use the table format** for the quick score breakdown - it's visually clear
-9. **Always provide the sample improved response** - This is often the most valuable learning tool
-10. **End on genuine encouragement** - Find something real to praise and express confidence in growth
-11. **Use emojis consistently** as shown in the format - they make the feedback more scannable and engaging
+8. **Consider response length** - Note if too brief (<3 min) or too long (>6 min) in Communication Skills feedback
+9. **Use the table format** for the quick score breakdown - it's visually clear
+10. **Always provide the sample improved response** - This is often the most valuable learning tool
+11. **End on genuine encouragement** - Find something real to praise and express confidence in growth
+12. **Use emojis consistently** as shown in the format - they make the feedback more scannable and engaging
