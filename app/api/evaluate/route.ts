@@ -61,7 +61,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       feedback,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      usage: {
+        input_tokens: message.usage.input_tokens,
+        output_tokens: message.usage.output_tokens,
+      },
+      model: selectedModel,
     });
 
   } catch (error) {

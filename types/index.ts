@@ -27,6 +27,8 @@ export interface InterviewSession {
   currentStationIndex: number;
   responses: StationResponse[];
   isComplete: boolean;
+  interviewId?: string; // Database interview ID
+  questionIds?: string[]; // Database question IDs for each station
 }
 
 export interface InterviewContextType {

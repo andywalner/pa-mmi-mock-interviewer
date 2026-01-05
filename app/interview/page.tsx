@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useInterview } from '@/components/providers/InterviewProvider';
 import { useDevSettings } from '@/components/providers/DevSettingsProvider';
+import { useAuth } from '@/components/providers/AuthProvider';
 import { MMI_QUESTIONS } from '@/lib/questions';
 import ProgressIndicator from '@/components/interview/ProgressIndicator';
 import StationTimer from '@/components/interview/StationTimer';
@@ -14,6 +15,7 @@ import NavigationButtons from '@/components/interview/NavigationButtons';
 
 export default function InterviewPage() {
   const router = useRouter();
+  const { user, loading } = useAuth();
   const { session, saveResponse, saveAudioResponse } = useInterview();
   const { settings } = useDevSettings();
   const [timeSpent, setTimeSpent] = useState(0);
@@ -25,11 +27,32 @@ export default function InterviewPage() {
   const currentQuestion = MMI_QUESTIONS[session.currentStationIndex];
   const savedResponse = session.responses[session.currentStationIndex];
 
+  // Auth check - middleware will redirect, but show loading state
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth');
+    }
+  }, [user, loading, router]);
+
   useEffect(() => {
     if (!session.selectedSchool) {
       router.push('/');
     }
   }, [session.selectedSchool, router]);
+
+  // Show loading state while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (!user) {
+    return null;
+  }
 
   useEffect(() => {
     setTimeSpent(0);
