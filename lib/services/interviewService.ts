@@ -88,6 +88,29 @@ export async function saveResponse(
 }
 
 /**
+ * Update the current station index for an interview
+ */
+export async function updateCurrentStation(
+  interviewId: string,
+  stationIndex: number
+): Promise<{ error: Error | null }> {
+  const supabase = createClient()
+
+  const { error } = await supabase
+    .from('interviews')
+    .update({
+      current_station_index: stationIndex,
+    })
+    .eq('id', interviewId)
+
+  if (error) {
+    return { error: new Error(error.message) }
+  }
+
+  return { error: null }
+}
+
+/**
  * Mark an interview as completed
  */
 export async function completeInterview(
@@ -236,4 +259,55 @@ export async function getDefaultInterviewTypeId(): Promise<{
   }
 
   return { data: data.id, error: null }
+}
+
+/**
+ * Get the most recent in-progress interview for a user
+ */
+export async function getInProgressInterview(
+  userId: string
+): Promise<{ data: InterviewWithResponses | null; error: Error | null }> {
+  const supabase = createClient()
+
+  const { data: interview, error: interviewError } = await supabase
+    .from('interviews')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('status', 'in_progress')
+    .order('started_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (interviewError) {
+    // No in-progress interview found is not an error
+    if (interviewError.code === 'PGRST116') {
+      return { data: null, error: null }
+    }
+    return { data: null, error: new Error(interviewError.message) }
+  }
+
+  const { data: responses, error: responsesError } = await supabase
+    .from('responses')
+    .select('*')
+    .eq('interview_id', interview.id)
+    .order('station_number', { ascending: true })
+
+  if (responsesError) {
+    return { data: null, error: new Error(responsesError.message) }
+  }
+
+  const { data: evaluation } = await supabase
+    .from('evaluations')
+    .select('*')
+    .eq('interview_id', interview.id)
+    .single()
+
+  return {
+    data: {
+      ...interview,
+      responses: responses || [],
+      evaluation: evaluation || undefined,
+    },
+    error: null,
+  }
 }

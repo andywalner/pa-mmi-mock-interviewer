@@ -7,7 +7,8 @@
 
 export async function transcribeAudio(
   stationId: number,
-  audioBlob: Blob
+  audioBlob: Blob,
+  retryCount = 0
 ): Promise<string | null> {
   try {
     // Create FormData with audio blob
@@ -36,6 +37,15 @@ export async function transcribeAudio(
 
   } catch (error) {
     console.error(`❌ Transcription error for station ${stationId}:`, error);
+
+    // Retry once if this is the first attempt
+    if (retryCount === 0) {
+      console.log(`🔄 Retrying transcription for station ${stationId}...`);
+      return transcribeAudio(stationId, audioBlob, 1);
+    }
+
+    // After retry failed, return null
+    console.error(`❌ Transcription failed after retry for station ${stationId}`);
     return null;
   }
 }

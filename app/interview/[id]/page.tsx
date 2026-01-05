@@ -1,19 +1,23 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/providers/AuthProvider'
-import { loadInterview, type InterviewWithResponses } from '@/lib/services/interviewService'
+import { useDevSettings } from '@/components/providers/DevSettingsProvider'
+import { loadInterview, saveEvaluation, type InterviewWithResponses } from '@/lib/services/interviewService'
+import { MMI_QUESTIONS } from '@/lib/questions'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-export default function InterviewDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params)
+export default function InterviewDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
+  const { settings } = useDevSettings()
   const [interview, setInterview] = useState<InterviewWithResponses | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [generatingFeedback, setGeneratingFeedback] = useState(false)
+  const [feedbackError, setFeedbackError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -22,17 +26,17 @@ export default function InterviewDetailPage({ params }: { params: Promise<{ id: 
   }, [user, authLoading, router])
 
   useEffect(() => {
-    if (user && resolvedParams.id) {
+    if (user && params.id) {
       loadInterviewData()
     }
-  }, [user, resolvedParams.id])
+  }, [user, params.id])
 
   const loadInterviewData = async () => {
     setLoading(true)
     setError(null)
 
     try {
-      const { data, error: fetchError } = await loadInterview(resolvedParams.id)
+      const { data, error: fetchError } = await loadInterview(params.id)
 
       if (fetchError || !data) {
         setError('Failed to load interview')
@@ -45,6 +49,61 @@ export default function InterviewDetailPage({ params }: { params: Promise<{ id: 
       console.error(err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleGenerateFeedback = async () => {
+    if (!interview) return
+
+    setGeneratingFeedback(true)
+    setFeedbackError(null)
+
+    try {
+      // Convert interview responses to the format expected by the API
+      const responses = interview.responses.map(r => ({
+        stationId: MMI_QUESTIONS[r.station_number - 1]?.id || r.station_number,
+        question: MMI_QUESTIONS[r.station_number - 1]?.prompt || '',
+        response: r.response_text || '',
+        timeSpent: r.time_spent_seconds || 0,
+      }))
+
+      const response = await fetch('/api/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          school: { id: 'general', name: interview.school_name || 'PA Program' },
+          responses,
+          model: settings.claudeModel,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate feedback')
+      }
+
+      const data = await response.json()
+
+      // Calculate estimated cost
+      const inputCost = (data.usage.input_tokens / 1_000_000) * 3
+      const outputCost = (data.usage.output_tokens / 1_000_000) * 15
+      const estimatedCost = inputCost + outputCost
+
+      // Save evaluation to database
+      await saveEvaluation(interview.id, {
+        feedback_text: data.feedback,
+        claude_model: data.model,
+        input_tokens: data.usage.input_tokens,
+        output_tokens: data.usage.output_tokens,
+        estimated_cost_usd: estimatedCost,
+      })
+
+      // Reload interview to show the new evaluation
+      await loadInterviewData()
+    } catch (err) {
+      console.error('Error generating feedback:', err)
+      setFeedbackError('Failed to generate feedback. Please try again.')
+    } finally {
+      setGeneratingFeedback(false)
     }
   }
 
@@ -170,8 +229,8 @@ export default function InterviewDetailPage({ params }: { params: Promise<{ id: 
           )}
         </div>
 
-        {/* Evaluation */}
-        {interview.evaluation && (
+        {/* Evaluation Section */}
+        {interview.evaluation ? (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-gray-900">AI Feedback</h2>
             <div className="card">
@@ -199,13 +258,35 @@ export default function InterviewDetailPage({ params }: { params: Promise<{ id: 
               )}
             </div>
           </div>
-        )}
-
-        {!interview.evaluation && interview.status === 'completed' && (
-          <div className="card text-center py-8">
-            <p className="text-gray-600">No AI feedback available for this interview</p>
+        ) : interview.status === 'completed' ? (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-gray-900">AI Feedback</h2>
+            <div className="card text-center py-8">
+              {feedbackError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                  {feedbackError}
+                </div>
+              )}
+              <p className="text-gray-600 mb-6">
+                {generatingFeedback
+                  ? 'Generating AI feedback...'
+                  : 'No AI feedback available yet. Generate feedback to see personalized insights.'}
+              </p>
+              <button
+                onClick={handleGenerateFeedback}
+                disabled={generatingFeedback || !settings.enableClaude}
+                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {generatingFeedback ? 'Generating...' : 'Generate AI Feedback'}
+              </button>
+              {!settings.enableClaude && (
+                <p className="text-sm text-gray-500 mt-2">
+                  Enable Claude in Dev Settings to generate feedback
+                </p>
+              )}
+            </div>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   )

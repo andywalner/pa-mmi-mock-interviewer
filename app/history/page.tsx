@@ -111,7 +111,7 @@ export default function HistoryPage() {
               <div
                 key={interview.id}
                 className="card hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => router.push(`/history/${interview.id}`)}
+                onClick={() => router.push(`/interview/${interview.id}`)}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

@@ -60,7 +60,7 @@ export default function NavigationButtons({
     nextStation();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isAudioMode) {
       saveResponse(currentResponse, timeSpent);
     }
@@ -83,9 +83,16 @@ export default function NavigationButtons({
         });
     }
 
-    // Submit interview and navigate to feedback (don't wait for transcription)
-    submitInterview();
-    router.push('/feedback');
+    // Submit interview and navigate to interview detail page (don't wait for transcription)
+    await submitInterview();
+
+    // Redirect to the interview detail page
+    if (session.interviewId) {
+      router.push(`/interview/${session.interviewId}`);
+    } else {
+      // Fallback to home if no interview ID
+      router.push('/');
+    }
   };
 
   const statusMessage = isAudioMode

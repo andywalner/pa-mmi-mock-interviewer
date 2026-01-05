@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
   const isPublicPage = request.nextUrl.pathname === '/'
 
   // Protected routes that require authentication
-  const protectedRoutes = ['/interview', '/feedback', '/account', '/history']
+  const protectedRoutes = ['/interview', '/account', '/history']
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   )
