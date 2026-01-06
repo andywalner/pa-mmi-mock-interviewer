@@ -35,6 +35,7 @@ export interface InterviewContextType {
   session: InterviewSession;
   setSelectedSchool: (school: School) => void;
   startInterview: () => void;
+  resumeInterview: (interviewId: string) => Promise<void>;
   saveResponse: (response: string, timeSpent: number) => void;
   saveAudioResponse: (audioBlob: Blob, audioDuration: number, timeSpent: number) => void;
   updateTranscription: (stationIndex: number, transcription: string, error?: string) => void;

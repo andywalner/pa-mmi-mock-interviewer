@@ -127,7 +127,7 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
           <p className="text-gray-600 mb-6">{error || 'Interview not found'}</p>
           <button onClick={() => router.push('/history')} className="btn-primary">
-            Back to History
+            Back to Completed Interviews
           </button>
         </div>
       </div>
@@ -153,7 +153,7 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
             >
               <path d="M15 19l-7-7 7-7" />
             </svg>
-            <span>Back to History</span>
+            <span>Back to Completed Interviews</span>
           </button>
 
           <div className="flex items-center justify-between">

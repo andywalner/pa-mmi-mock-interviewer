@@ -98,8 +98,8 @@ export default function NavigationButtons({
   const statusMessage = isAudioMode
     ? (isRecording
         ? 'Complete your recording to continue'
-        : (currentAudioRecording ? 'Recording saved automatically' : 'Please record your response to continue'))
-    : (hasResponse ? 'Response saved automatically' : 'Please provide a response to continue');
+        : (currentAudioRecording ? 'Proceeding to the next station will save your final response' : 'Please record your response to continue'))
+    : (hasResponse ? 'Proceeding to the next station will save your final response' : 'Please provide a response to continue');
 
   return (
     <div className="flex justify-between items-center pt-6 border-t border-gray-200">

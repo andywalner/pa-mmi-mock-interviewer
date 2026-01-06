@@ -10,6 +10,7 @@ import {
   completeInterview as completeInterviewInDB,
   getDefaultInterviewTypeId,
   updateCurrentStation,
+  loadInterview,
 } from '@/lib/services/interviewService';
 import { createClient } from '@/lib/supabase/client';
 import {
@@ -225,6 +226,35 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const resumeInterview = async (interviewId: string) => {
+    if (!user) return;
+
+    try {
+      const { data: dbInterview, error } = await loadInterview(interviewId);
+
+      if (error || !dbInterview) {
+        console.error('Failed to load interview:', error);
+        return;
+      }
+
+      // Load question IDs
+      const supabase = createClient();
+      const { data: questions } = await supabase
+        .from('questions')
+        .select('id')
+        .eq('interview_type_id', dbInterview.interview_type_id)
+        .order('station_number', { ascending: true });
+
+      const questionIds = questions?.map(q => q.id) || [];
+
+      // Convert DB interview to session state
+      const sessionFromDb = convertDbToSession(dbInterview, questionIds);
+      setSession(sessionFromDb);
+    } catch (error) {
+      console.error('Error resuming interview:', error);
+    }
+  };
+
   const saveResponse = (response: string, timeSpent: number) => {
     const currentQuestion = MMI_QUESTIONS[session.currentStationIndex];
     const stationResponse: StationResponse = {
@@ -341,6 +371,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     session,
     setSelectedSchool,
     startInterview,
+    resumeInterview,
     saveResponse,
     saveAudioResponse,
     updateTranscription,

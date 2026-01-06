@@ -40,7 +40,9 @@ export default function HistoryPage() {
         setError('Failed to load interview history')
         console.error(fetchError)
       } else {
-        setInterviews(data)
+        // Filter to only show completed interviews
+        const completedInterviews = data.filter(interview => interview.status === 'completed')
+        setInterviews(completedInterviews)
       }
     } catch (err) {
       setError('An error occurred while loading interviews')
@@ -82,10 +84,10 @@ export default function HistoryPage() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Interview History
+            Completed Interviews
           </h1>
           <p className="text-gray-600">
-            View your past practice interviews and feedback
+            View your completed practice interviews and feedback
           </p>
         </div>
 
@@ -93,10 +95,10 @@ export default function HistoryPage() {
           <div className="card text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">📋</div>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              No Interviews Yet
+              No Completed Interviews
             </h2>
             <p className="text-gray-600 mb-6">
-              Start your first practice interview to see it here
+              Complete a practice interview to see it here
             </p>
             <button
               onClick={() => router.push('/')}

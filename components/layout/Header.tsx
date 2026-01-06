@@ -42,7 +42,7 @@ export default function Header() {
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  History
+                  Completed Interviews
                 </Link>
                 <Link
                   href="/account"
