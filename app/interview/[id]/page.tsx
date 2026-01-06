@@ -55,6 +55,12 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
   const handleGenerateFeedback = async () => {
     if (!interview) return
 
+    // Safety check: don't generate feedback if it already exists
+    if (interview.evaluation) {
+      console.log('Feedback already exists for this interview, skipping API call')
+      return
+    }
+
     setGeneratingFeedback(true)
     setFeedbackError(null)
 
