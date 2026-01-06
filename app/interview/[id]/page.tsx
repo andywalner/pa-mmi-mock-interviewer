@@ -184,6 +184,65 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
           </div>
         </div>
 
+        {/* Evaluation Section */}
+        {interview.evaluation ? (
+          <div className="space-y-4 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">Feedback</h2>
+            <div className="card">
+              <div className="prose prose-medical max-w-none">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {interview.evaluation.feedback_text}
+                </ReactMarkdown>
+              </div>
+
+              {interview.evaluation.claude_model && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="text-xs text-gray-500 space-y-1">
+                    <p>Model: {interview.evaluation.claude_model}</p>
+                    {interview.evaluation.input_tokens && interview.evaluation.output_tokens && (
+                      <p>
+                        Tokens: {interview.evaluation.input_tokens.toLocaleString()} input /{' '}
+                        {interview.evaluation.output_tokens.toLocaleString()} output
+                      </p>
+                    )}
+                    {interview.evaluation.estimated_cost_usd && (
+                      <p>Estimated cost: ${interview.evaluation.estimated_cost_usd.toFixed(4)}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : interview.status === 'completed' ? (
+          <div className="space-y-4 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">Feedback</h2>
+            <div className="card text-center py-8">
+              {feedbackError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                  {feedbackError}
+                </div>
+              )}
+              <p className="text-gray-600 mb-6">
+                {generatingFeedback
+                  ? 'Generating feedback...'
+                  : 'No feedback available yet. Generate feedback to see personalized insights.'}
+              </p>
+              <button
+                onClick={handleGenerateFeedback}
+                disabled={generatingFeedback || !settings.enableClaude}
+                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {generatingFeedback ? 'Generating...' : 'Generate Feedback'}
+              </button>
+              {!settings.enableClaude && (
+                <p className="text-sm text-gray-500 mt-2">
+                  Enable Claude in Dev Settings to generate feedback
+                </p>
+              )}
+            </div>
+          </div>
+        ) : null}
+
         {/* Responses */}
         <div className="space-y-6 mb-8">
           <h2 className="text-2xl font-bold text-gray-900">Your Responses</h2>
@@ -228,65 +287,6 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
             ))
           )}
         </div>
-
-        {/* Evaluation Section */}
-        {interview.evaluation ? (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gray-900">AI Feedback</h2>
-            <div className="card">
-              <div className="prose prose-medical max-w-none">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {interview.evaluation.feedback_text}
-                </ReactMarkdown>
-              </div>
-
-              {interview.evaluation.claude_model && (
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <div className="text-xs text-gray-500 space-y-1">
-                    <p>Model: {interview.evaluation.claude_model}</p>
-                    {interview.evaluation.input_tokens && interview.evaluation.output_tokens && (
-                      <p>
-                        Tokens: {interview.evaluation.input_tokens.toLocaleString()} input /{' '}
-                        {interview.evaluation.output_tokens.toLocaleString()} output
-                      </p>
-                    )}
-                    {interview.evaluation.estimated_cost_usd && (
-                      <p>Estimated cost: ${interview.evaluation.estimated_cost_usd.toFixed(4)}</p>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : interview.status === 'completed' ? (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gray-900">AI Feedback</h2>
-            <div className="card text-center py-8">
-              {feedbackError && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
-                  {feedbackError}
-                </div>
-              )}
-              <p className="text-gray-600 mb-6">
-                {generatingFeedback
-                  ? 'Generating AI feedback...'
-                  : 'No AI feedback available yet. Generate feedback to see personalized insights.'}
-              </p>
-              <button
-                onClick={handleGenerateFeedback}
-                disabled={generatingFeedback || !settings.enableClaude}
-                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {generatingFeedback ? 'Generating...' : 'Generate AI Feedback'}
-              </button>
-              {!settings.enableClaude && (
-                <p className="text-sm text-gray-500 mt-2">
-                  Enable Claude in Dev Settings to generate feedback
-                </p>
-              )}
-            </div>
-          </div>
-        ) : null}
       </div>
     </div>
   )
