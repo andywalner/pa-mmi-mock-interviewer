@@ -138,7 +138,7 @@ export default function HistoryPage() {
                     <div className="text-sm text-gray-600">
                       <p>
                         Started:{' '}
-                        {new Date((interview.started_at || interview.created_at) ?? new Date()).toLocaleDateString('en-US', {
+                        {new Date((interview.started_at || interview.created_at) ?? new Date()).toLocaleDateString(undefined, {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
@@ -149,7 +149,7 @@ export default function HistoryPage() {
                       {interview.completed_at && (
                         <p>
                           Completed:{' '}
-                          {new Date(interview.completed_at).toLocaleDateString('en-US', {
+                          {new Date(interview.completed_at).toLocaleDateString(undefined, {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',

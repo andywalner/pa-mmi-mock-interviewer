@@ -215,7 +215,7 @@ export default function AccountPage() {
                 {profile.created_at && (
                   <p>
                     <span className="font-medium">Account created:</span>{' '}
-                    {new Date(profile.created_at).toLocaleDateString('en-US', {
+                    {new Date(profile.created_at).toLocaleDateString(undefined, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
@@ -225,7 +225,7 @@ export default function AccountPage() {
                 {profile.updated_at && (
                   <p>
                     <span className="font-medium">Last updated:</span>{' '}
-                    {new Date(profile.updated_at).toLocaleDateString('en-US', {
+                    {new Date(profile.updated_at).toLocaleDateString(undefined, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',

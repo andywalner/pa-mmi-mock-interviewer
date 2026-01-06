@@ -166,7 +166,7 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Interview Details</h1>
               <p className="text-gray-600">
-                {new Date((interview.started_at || interview.created_at) ?? new Date()).toLocaleDateString('en-US', {
+                {new Date((interview.started_at || interview.created_at) ?? new Date()).toLocaleDateString(undefined, {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
