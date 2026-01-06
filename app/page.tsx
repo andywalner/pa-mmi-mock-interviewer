@@ -6,6 +6,7 @@ import { useAuth } from '@/components/providers/AuthProvider'
 import { useInterview } from '@/components/providers/InterviewProvider'
 import { getUserInterviews } from '@/lib/services/interviewService'
 import { MMI_QUESTIONS } from '@/lib/questions'
+import { formatLocalDateTime } from '@/lib/dateUtils'
 import StartButton from '@/components/landing/StartButton'
 import type { Database } from '@/types/supabase'
 
@@ -96,10 +97,10 @@ export default function LandingPage() {
                         Station {(interview.current_station_index || 0) + 1} of {MMI_QUESTIONS.length}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        Started {new Date((interview.started_at || interview.created_at) ?? new Date()).toLocaleDateString(undefined, {
+                        Started {formatLocalDateTime(interview.started_at || interview.created_at, {
                           month: 'short',
                           day: 'numeric',
-                          hour: '2-digit',
+                          hour: 'numeric',
                           minute: '2-digit',
                         })}
                       </p>

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/providers/AuthProvider'
 import { getUserInterviews } from '@/lib/services/interviewService'
+import { formatLocalDateTime } from '@/lib/dateUtils'
 import type { Database } from '@/types/supabase'
 
 type Interview = Database['public']['Tables']['interviews']['Row']
@@ -138,22 +139,22 @@ export default function HistoryPage() {
                     <div className="text-sm text-gray-600">
                       <p>
                         Started:{' '}
-                        {new Date((interview.started_at || interview.created_at) ?? new Date()).toLocaleDateString(undefined, {
+                        {formatLocalDateTime(interview.started_at || interview.created_at, {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
-                          hour: '2-digit',
+                          hour: 'numeric',
                           minute: '2-digit',
                         })}
                       </p>
                       {interview.completed_at && (
                         <p>
                           Completed:{' '}
-                          {new Date(interview.completed_at).toLocaleDateString(undefined, {
+                          {formatLocalDateTime(interview.completed_at, {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
-                            hour: '2-digit',
+                            hour: 'numeric',
                             minute: '2-digit',
                           })}
                         </p>

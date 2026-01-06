@@ -6,6 +6,7 @@ import { useAuth } from '@/components/providers/AuthProvider'
 import { useDevSettings } from '@/components/providers/DevSettingsProvider'
 import { loadInterview, saveEvaluation, type InterviewWithResponses } from '@/lib/services/interviewService'
 import { MMI_QUESTIONS } from '@/lib/questions'
+import { formatLocalDateTime } from '@/lib/dateUtils'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
@@ -166,11 +167,11 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Interview Details</h1>
               <p className="text-gray-600">
-                {new Date((interview.started_at || interview.created_at) ?? new Date()).toLocaleDateString(undefined, {
+                {formatLocalDateTime(interview.started_at || interview.created_at, {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
-                  hour: '2-digit',
+                  hour: 'numeric',
                   minute: '2-digit',
                 })}
               </p>
