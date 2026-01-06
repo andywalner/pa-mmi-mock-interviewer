@@ -133,11 +133,6 @@ export default function HistoryPage() {
                           ? 'In Progress'
                           : interview.status}
                       </span>
-                      {interview.school_name && (
-                        <span className="text-sm text-gray-600">
-                          {interview.school_name}
-                        </span>
-                      )}
                     </div>
 
                     <div className="text-sm text-gray-600">

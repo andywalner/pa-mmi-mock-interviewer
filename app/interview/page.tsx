@@ -34,11 +34,12 @@ export default function InterviewPage() {
     }
   }, [user, loading, router]);
 
+  // Redirect to home if no interview session started
   useEffect(() => {
-    if (!session.selectedSchool) {
+    if (!session.interviewId && session.currentStationIndex === 0 && session.responses.length === 0) {
       router.push('/');
     }
-  }, [session.selectedSchool, router]);
+  }, [session.interviewId, session.currentStationIndex, session.responses.length, router]);
 
   // Show loading state while checking auth
   if (loading) {
@@ -72,7 +73,7 @@ export default function InterviewPage() {
     }
   }, [session.currentStationIndex, savedResponse, isAudioMode]);
 
-  if (!session.selectedSchool || !currentQuestion) {
+  if (!currentQuestion) {
     return null;
   }
 

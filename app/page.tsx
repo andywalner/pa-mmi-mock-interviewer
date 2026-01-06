@@ -91,9 +91,6 @@ export default function LandingPage() {
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-200 text-yellow-800">
                           In Progress
                         </span>
-                        {interview.school_name && (
-                          <span className="text-sm text-gray-600">{interview.school_name}</span>
-                        )}
                       </div>
                       <p className="text-sm text-gray-600">
                         Station {(interview.current_station_index || 0) + 1} of {MMI_QUESTIONS.length}

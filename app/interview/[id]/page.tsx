@@ -77,7 +77,7 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          school: { id: 'general', name: interview.school_name || 'PA Program' },
+          school: { id: 'general', name: 'PA Program' },
           responses,
           model: settings.claudeModel,
         }),

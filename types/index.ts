@@ -33,7 +33,6 @@ export interface InterviewSession {
 
 export interface InterviewContextType {
   session: InterviewSession;
-  setSelectedSchool: (school: School) => void;
   startInterview: () => void;
   resumeInterview: (interviewId: string) => Promise<void>;
   saveResponse: (response: string, timeSpent: number) => void;

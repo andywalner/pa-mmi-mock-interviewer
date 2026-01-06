@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       apiKey: process.env.ANTHROPIC_API_KEY
     });
 
-    const userMessage = formatResponsesForEvaluation(school.name, responses);
+    const userMessage = formatResponsesForEvaluation(responses);
 
     // Use model from dev settings, fallback to env variable, then default to Sonnet 4.5
     const selectedModel = model ? getClaudeModelId(model) : (process.env.CLAUDE_MODEL || 'claude-sonnet-4-5-20250929');
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function formatResponsesForEvaluation(schoolName: string, responses: any[]): string {
+function formatResponsesForEvaluation(responses: any[]): string {
   return `
 I have completed a practice MMI interview for PA school admission. Please evaluate my responses to all ${responses.length} stations.
 

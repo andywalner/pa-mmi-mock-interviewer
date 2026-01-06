@@ -50,7 +50,7 @@ function convertDbToSession(dbInterview: InterviewWithResponses, questionIds: st
   });
 
   return {
-    selectedSchool: { id: 'general', name: dbInterview.school_name || 'PA Program' },
+    selectedSchool: null,
     currentStationIndex: dbInterview.current_station_index || 0,
     responses,
     isComplete: dbInterview.status === 'completed',
@@ -166,14 +166,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     }
   }, [session, isHydrated]);
 
-  const setSelectedSchool = (school: School) => {
-    setSession(s => ({ ...s, selectedSchool: school }));
-  };
-
   const startInterview = async () => {
-    // Set generic school for API compatibility
-    const genericSchool: School = { id: 'general', name: 'PA Program' };
-
     // Create interview in database if user is authenticated
     let interviewId: string | undefined;
     let questionIds: string[] | undefined;
@@ -189,7 +182,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
           const { data: interview, error: createError } = await createInterview(
             user.id,
             interviewTypeId,
-            genericSchool.name
+            undefined // No school name needed
           );
 
           if (createError || !interview) {
@@ -217,7 +210,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
 
     setSession(s => ({
       ...s,
-      selectedSchool: genericSchool,
+      selectedSchool: null,
       currentStationIndex: 0,
       responses: [],
       isComplete: false,
@@ -369,7 +362,6 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
 
   const value: InterviewContextType = {
     session,
-    setSelectedSchool,
     startInterview,
     resumeInterview,
     saveResponse,
