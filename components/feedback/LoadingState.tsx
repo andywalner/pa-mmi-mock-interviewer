@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 const LOADING_MESSAGES = [
   "Taking your vital signs... of a good candidate...",
@@ -20,6 +20,17 @@ const LOADING_MESSAGES = [
   "Checking your bedside manner..."
 ];
 
+// Memoized spinner component to prevent re-renders
+const Spinner = memo(() => (
+  <div className="relative py-8">
+    <div className="w-24 h-24 border-4 border-medical-200 border-t-medical-500 rounded-full animate-spin mx-auto"></div>
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="w-16 h-16 bg-medical-50 rounded-full animate-pulse"></div>
+    </div>
+  </div>
+));
+Spinner.displayName = 'Spinner';
+
 export default function LoadingState() {
   const [messageIndex, setMessageIndex] = useState(0);
   const [fade, setFade] = useState(true);
@@ -38,7 +49,7 @@ export default function LoadingState() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="flex items-center justify-center px-4 py-12">
       <div className="max-w-2xl w-full text-center space-y-8">
         {/* Main Heading */}
         <div className="space-y-3">
@@ -53,12 +64,7 @@ export default function LoadingState() {
         </div>
 
         {/* Animated Spinner */}
-        <div className="relative py-8">
-          <div className="w-24 h-24 border-4 border-medical-200 border-t-medical-500 rounded-full animate-spin mx-auto"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 bg-medical-50 rounded-full animate-pulse"></div>
-          </div>
-        </div>
+        <Spinner />
 
         {/* Rotating Messages */}
         <div className="min-h-[60px] flex items-center justify-center">

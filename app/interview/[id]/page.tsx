@@ -7,6 +7,7 @@ import { useDevSettings } from '@/components/providers/DevSettingsProvider'
 import { loadInterview, saveEvaluation, type InterviewWithResponses } from '@/lib/services/interviewService'
 import { MMI_QUESTIONS } from '@/lib/questions'
 import { formatLocalDateTime } from '@/lib/dateUtils'
+import LoadingState from '@/components/feedback/LoadingState'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
@@ -31,6 +32,13 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
       loadInterviewData()
     }
   }, [user, params.id])
+
+  // Auto-generate feedback for completed interviews without evaluation
+  useEffect(() => {
+    if (interview && interview.status === 'completed' && !interview.evaluation && !generatingFeedback && settings.enableClaude) {
+      handleGenerateFeedback()
+    }
+  }, [interview, generatingFeedback, settings.enableClaude])
 
   const loadInterviewData = async () => {
     setLoading(true)
@@ -223,30 +231,29 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
         ) : interview.status === 'completed' ? (
           <div className="space-y-4 mb-8">
             <h2 className="text-2xl font-bold text-gray-900">Feedback</h2>
-            <div className="card text-center py-8">
-              {feedbackError && (
+            {generatingFeedback ? (
+              <LoadingState />
+            ) : feedbackError ? (
+              <div className="card text-center py-8">
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
                   {feedbackError}
                 </div>
-              )}
-              <p className="text-gray-600 mb-6">
-                {generatingFeedback
-                  ? 'Generating feedback...'
-                  : 'No feedback available yet. Generate feedback to see personalized insights.'}
-              </p>
-              <button
-                onClick={handleGenerateFeedback}
-                disabled={generatingFeedback || !settings.enableClaude}
-                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {generatingFeedback ? 'Generating...' : 'Generate Feedback'}
-              </button>
-              {!settings.enableClaude && (
-                <p className="text-sm text-gray-500 mt-2">
-                  Enable Claude in Dev Settings to generate feedback
-                </p>
-              )}
-            </div>
+                <button
+                  onClick={handleGenerateFeedback}
+                  disabled={!settings.enableClaude}
+                  className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Retry Generate Feedback
+                </button>
+                {!settings.enableClaude && (
+                  <p className="text-sm text-gray-500 mt-2">
+                    Enable Claude in Dev Settings to generate feedback
+                  </p>
+                )}
+              </div>
+            ) : (
+              <LoadingState />
+            )}
           </div>
         ) : null}
 
