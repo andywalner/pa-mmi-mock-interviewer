@@ -74,6 +74,11 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
     setFeedbackError(null)
 
     try {
+      // Validate that we have responses
+      if (!interview.responses || interview.responses.length === 0) {
+        throw new Error('No responses found to evaluate. Please complete the interview first.')
+      }
+
       // Convert interview responses to the format expected by the API
       const responses = interview.responses.map(r => ({
         stationId: MMI_QUESTIONS[r.station_number - 1]?.id || r.station_number,
@@ -81,6 +86,12 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
         response: r.response_text || '',
         timeSpent: r.time_spent_seconds || 0,
       }))
+
+      // Validate that responses have content
+      const hasValidResponses = responses.some(r => r.response && r.response.trim().length > 0)
+      if (!hasValidResponses) {
+        throw new Error('All responses are empty. Please complete the interview with your answers.')
+      }
 
       const response = await fetch('/api/evaluate', {
         method: 'POST',
@@ -93,7 +104,18 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
       })
 
       if (!response.ok) {
-        throw new Error('Failed to generate feedback')
+        // Try to parse error message from response
+        let errorMessage = 'Failed to generate feedback'
+        try {
+          const errorData = await response.json()
+          if (errorData.error) {
+            errorMessage = errorData.error
+          }
+        } catch (e) {
+          // If parsing fails, use status text
+          errorMessage = `Failed to generate feedback: ${response.status} ${response.statusText}`
+        }
+        throw new Error(errorMessage)
       }
 
       const data = await response.json()
@@ -116,7 +138,8 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
       await loadInterviewData()
     } catch (err) {
       console.error('Error generating feedback:', err)
-      setFeedbackError('Failed to generate feedback. Please try again.')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to generate feedback. Please try again.'
+      setFeedbackError(errorMessage)
     } finally {
       setGeneratingFeedback(false)
     }
@@ -235,7 +258,9 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
               <LoadingState />
             ) : feedbackError ? (
               <div className="card text-center py-8">
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                <div className="text-red-500 text-5xl mb-4">⚠️</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Failed to Generate Feedback</h3>
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 max-w-lg mx-auto">
                   {feedbackError}
                 </div>
                 <button
