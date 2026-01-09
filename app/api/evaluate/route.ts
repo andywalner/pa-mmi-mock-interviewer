@@ -40,13 +40,7 @@ export async function POST(request: NextRequest) {
     const message = await anthropic.messages.create({
       model: selectedModel,
       max_tokens: 4096,
-      system: [
-        {
-          type: 'text',
-          text: systemPrompt,
-          cache_control: { type: 'ephemeral' }
-        } as any // Type assertion for prompt caching (API supports it but types don't yet)
-      ],
+      system: systemPrompt,
       messages: [
         {
           role: 'user',
