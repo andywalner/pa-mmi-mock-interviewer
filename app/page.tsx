@@ -124,12 +124,6 @@ export default function LandingPage() {
             </div>
           </div>
         )}
-
-        <div className="text-center text-sm text-gray-500">
-          <p>
-            This is a practice tool. Your responses will be evaluated using AI to help you prepare for real MMI interviews.
-          </p>
-        </div>
       </div>
     </main>
   )
