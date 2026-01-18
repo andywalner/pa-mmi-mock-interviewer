@@ -234,10 +234,10 @@ export default function AccountPage() {
             </div>
           </form>
 
-          {/* Monthly Interview Quota */}
+          {/* Monthly Interview Limit */}
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Monthly Interview Quota
+              Monthly Interview Limit
             </h2>
             {quota ? (
               <div className="space-y-2">
@@ -252,7 +252,7 @@ export default function AccountPage() {
                   />
                 </div>
                 <p className="text-sm text-gray-500">
-                  Quota resets on the 1st of each month
+                  Limit resets on the 1st of each month
                 </p>
               </div>
             ) : (
