@@ -3,10 +3,25 @@
 import { useAuth } from '@/components/providers/AuthProvider'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useRef, useEffect } from 'react'
 
 export default function Header() {
   const { user, loading, signOut } = useAuth()
   const pathname = usePathname()
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Don't show header on auth page
   if (pathname === '/auth') {
@@ -44,16 +59,6 @@ export default function Header() {
                 >
                   Completed Interviews
                 </Link>
-                <Link
-                  href="/account"
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
-                    pathname === '/account'
-                      ? 'bg-medical-100 text-medical-700'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  Account
-                </Link>
               </nav>
             )}
           </div>
@@ -62,17 +67,46 @@ export default function Header() {
             {loading ? (
               <div className="text-sm text-gray-500">Loading...</div>
             ) : user ? (
-              <>
-                <span className="text-sm text-gray-700 hidden sm:inline">
-                  {user.email}
-                </span>
+              <div className="relative" ref={dropdownRef}>
                 <button
-                  onClick={() => signOut()}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition"
                 >
-                  Sign Out
+                  <span className="hidden sm:inline">{user.email}</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M19 9l-7 7-7-7" />
+                  </svg>
                 </button>
-              </>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-200 z-10">
+                    <Link
+                      href="/account"
+                      onClick={() => setDropdownOpen(false)}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Account Settings
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setDropdownOpen(false)
+                        signOut()
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <Link
                 href="/auth"

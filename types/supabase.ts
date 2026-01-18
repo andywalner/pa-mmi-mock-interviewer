@@ -264,31 +264,31 @@ export type Database = {
         Row: {
           created_at: string | null
           default_claude_model: string | null
+          display_name: string | null
           enable_audio_mode: boolean | null
           enable_deepgram: boolean | null
           full_name: string | null
           id: string
-          preferred_name: string | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           default_claude_model?: string | null
+          display_name?: string | null
           enable_audio_mode?: boolean | null
           enable_deepgram?: boolean | null
           full_name?: string | null
           id: string
-          preferred_name?: string | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           default_claude_model?: string | null
+          display_name?: string | null
           enable_audio_mode?: boolean | null
           enable_deepgram?: boolean | null
           full_name?: string | null
           id?: string
-          preferred_name?: string | null
           updated_at?: string | null
         }
         Relationships: []

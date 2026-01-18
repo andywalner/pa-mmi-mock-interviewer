@@ -19,7 +19,7 @@ export default function AccountPage() {
 
   // Form state
   const [fullName, setFullName] = useState('')
-  const [preferredName, setPreferredName] = useState('')
+  const [displayName, setDisplayName] = useState('')
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -53,7 +53,7 @@ export default function AccountPage() {
       } else if (data) {
         setProfile(data)
         setFullName(data.full_name || '')
-        setPreferredName(data.preferred_name || '')
+        setDisplayName(data.display_name || '')
       }
     } catch (err) {
       console.error('Error:', err)
@@ -78,7 +78,7 @@ export default function AccountPage() {
         .from('user_profiles')
         .update({
           full_name: fullName,
-          preferred_name: preferredName,
+          display_name: displayName,
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id)
@@ -175,66 +175,44 @@ export default function AccountPage() {
 
               <div>
                 <label
-                  htmlFor="preferredName"
+                  htmlFor="displayName"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Preferred Name (Optional)
+                  Display Name (Optional)
                 </label>
                 <input
                   type="text"
-                  id="preferredName"
-                  value={preferredName}
-                  onChange={(e) => setPreferredName(e.target.value)}
+                  id="displayName"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent"
                   placeholder="John"
                 />
                 <p className="mt-1 text-sm text-gray-500">
-                  How you'd like to be addressed in the app
+                  Your public display name for social features
                 </p>
               </div>
 
-              <div className="pt-4">
+              <div className="pt-4 flex items-center justify-between">
                 <button
                   type="submit"
                   disabled={saving}
-                  className="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>
+                {profile?.created_at && (
+                  <p className="text-sm text-gray-500">
+                    Joined {new Date(profile.created_at + 'Z').toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </p>
+                )}
               </div>
             </div>
           </form>
-
-          {/* Account Metadata */}
-          {profile && (
-            <div className="card">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Account Metadata
-              </h2>
-              <div className="space-y-2 text-sm text-gray-600">
-                {profile.created_at && (
-                  <p>
-                    <span className="font-medium">Account created:</span>{' '}
-                    {new Date(profile.created_at + 'Z').toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
-                )}
-                {profile.updated_at && (
-                  <p>
-                    <span className="font-medium">Last updated:</span>{' '}
-                    {new Date(profile.updated_at + 'Z').toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
