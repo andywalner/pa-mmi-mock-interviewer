@@ -11,12 +11,12 @@ import {
   getDefaultInterviewTypeId,
   updateCurrentStation,
   loadInterview,
-} from '@/lib/services/interviewService';
-import { createClient } from '@/lib/supabase/client';
-import {
+  canStartInterview,
+  getUserMonthlyInterviewCount,
   getInProgressInterview,
   type InterviewWithResponses,
 } from '@/lib/services/interviewService';
+import { createClient } from '@/lib/supabase/client';
 
 const STORAGE_KEY = 'mmi_interview_session';
 
@@ -173,6 +173,21 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
 
     if (user) {
       try {
+        // CHECK QUOTA FIRST
+        const { allowed, count, limit, error: quotaError } = await canStartInterview(user.id)
+
+        if (quotaError) {
+          console.error('Failed to check quota:', quotaError)
+          // Continue anyway - don't block on quota check failure
+        } else if (!allowed) {
+          // Quota exceeded - throw error
+          throw new Error(
+            `You've reached your limit of ${limit} interviews this month. ` +
+            `Your quota resets on the 1st. For additional interview credits, ` +
+            `please contact thepaprep@gmail.com`
+          )
+        }
+
         // Get default interview type
         const { data: interviewTypeId, error: typeError } = await getDefaultInterviewTypeId();
         if (typeError || !interviewTypeId) {
@@ -420,7 +435,11 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     updateTranscription,
     nextStation,
     submitInterview,
-    resetInterview
+    resetInterview,
+    getUserQuota: async () => {
+      if (!user) return { count: 0, limit: 10, error: null }
+      return await getUserMonthlyInterviewCount(user.id)
+    }
   };
 
   if (!isHydrated) {

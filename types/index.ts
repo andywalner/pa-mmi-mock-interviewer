@@ -33,7 +33,7 @@ export interface InterviewSession {
 
 export interface InterviewContextType {
   session: InterviewSession;
-  startInterview: () => void;
+  startInterview: () => Promise<void>;
   resumeInterview: (interviewId: string) => Promise<void>;
   saveResponse: (response: string, timeSpent: number) => Promise<void>;
   saveAudioResponse: (audioBlob: Blob, audioDuration: number, timeSpent: number) => void;
@@ -42,6 +42,7 @@ export interface InterviewContextType {
   nextStation: () => void;
   submitInterview: () => void;
   resetInterview: () => void;
+  getUserQuota: () => Promise<{ count: number; limit: number; error: Error | null }>;
 }
 
 export interface EvaluationRequest {

@@ -46,6 +46,47 @@ export async function createInterview(
 }
 
 /**
+ * Get the number of interviews a user has created this month
+ */
+export async function getUserMonthlyInterviewCount(
+  userId: string
+): Promise<{ count: number; limit: number; error: Error | null }> {
+  const supabase = createClient()
+
+  // Get start of current month in UTC
+  const startOfMonth = new Date()
+  startOfMonth.setUTCDate(1)
+  startOfMonth.setUTCHours(0, 0, 0, 0)
+
+  const { count, error } = await supabase
+    .from('interviews')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .gte('created_at', startOfMonth.toISOString())
+
+  if (error) {
+    return { count: 0, limit: 10, error: new Error(error.message) }
+  }
+
+  return { count: count || 0, limit: 10, error: null }
+}
+
+/**
+ * Check if a user can start a new interview (within monthly quota)
+ */
+export async function canStartInterview(
+  userId: string
+): Promise<{ allowed: boolean; count: number; limit: number; error: Error | null }> {
+  const { count, limit, error } = await getUserMonthlyInterviewCount(userId)
+
+  if (error) {
+    return { allowed: false, count: 0, limit: 10, error }
+  }
+
+  return { allowed: count < limit, count, limit, error: null }
+}
+
+/**
  * Save or update a response for a specific station
  */
 export async function saveResponse(

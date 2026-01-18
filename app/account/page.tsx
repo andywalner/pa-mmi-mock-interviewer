@@ -20,6 +20,7 @@ export default function AccountPage() {
   // Form state
   const [fullName, setFullName] = useState('')
   const [displayName, setDisplayName] = useState('')
+  const [quota, setQuota] = useState<{ count: number; limit: number } | null>(null)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -30,6 +31,7 @@ export default function AccountPage() {
   useEffect(() => {
     if (user) {
       loadProfile()
+      loadQuota()
     }
   }, [user])
 
@@ -60,6 +62,27 @@ export default function AccountPage() {
       setError('An error occurred')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadQuota = async () => {
+    if (!user) return
+
+    try {
+      const supabase = createClient()
+      const startOfMonth = new Date()
+      startOfMonth.setUTCDate(1)
+      startOfMonth.setUTCHours(0, 0, 0, 0)
+
+      const { count } = await supabase
+        .from('interviews')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', startOfMonth.toISOString())
+
+      setQuota({ count: count || 0, limit: 10 })
+    } catch (err) {
+      console.error('Error loading quota:', err)
     }
   }
 
@@ -210,6 +233,32 @@ export default function AccountPage() {
               </div>
             </div>
           </form>
+
+          {/* Monthly Interview Quota */}
+          <div className="card">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Monthly Interview Quota
+            </h2>
+            {quota ? (
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700">Interviews this month:</span>
+                  <span className="font-semibold">{quota.count} / {quota.limit}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-medical-600 h-2 rounded-full transition-all"
+                    style={{ width: `${(quota.count / quota.limit) * 100}%` }}
+                  />
+                </div>
+                <p className="text-sm text-gray-500">
+                  Quota resets on the 1st of each month
+                </p>
+              </div>
+            ) : (
+              <p className="text-gray-500">Loading...</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
