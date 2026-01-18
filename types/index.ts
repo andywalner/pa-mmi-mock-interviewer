@@ -35,8 +35,9 @@ export interface InterviewContextType {
   session: InterviewSession;
   startInterview: () => void;
   resumeInterview: (interviewId: string) => Promise<void>;
-  saveResponse: (response: string, timeSpent: number) => void;
+  saveResponse: (response: string, timeSpent: number) => Promise<void>;
   saveAudioResponse: (audioBlob: Blob, audioDuration: number, timeSpent: number) => void;
+  saveAudioResponseToDB: () => Promise<void>;
   updateTranscription: (stationIndex: number, transcription: string, error?: string) => void;
   nextStation: () => void;
   submitInterview: () => void;

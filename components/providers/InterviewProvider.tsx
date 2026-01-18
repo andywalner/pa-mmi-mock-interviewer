@@ -248,7 +248,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const saveResponse = (response: string, timeSpent: number) => {
+  const saveResponse = async (response: string, timeSpent: number) => {
     const currentQuestion = MMI_QUESTIONS[session.currentStationIndex];
     const stationResponse: StationResponse = {
       stationId: currentQuestion.id,
@@ -262,6 +262,26 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
       updatedResponses[s.currentStationIndex] = stationResponse;
       return { ...s, responses: updatedResponses };
     });
+
+    // Save to database immediately
+    if (user && session.interviewId && session.questionIds) {
+      const stationIndex = session.currentStationIndex;
+      if (session.questionIds[stationIndex]) {
+        try {
+          await saveResponseToDB(
+            session.interviewId,
+            stationIndex + 1, // Station number is 1-indexed in DB
+            session.questionIds[stationIndex],
+            {
+              response_text: response,
+              time_spent_seconds: timeSpent,
+            }
+          );
+        } catch (err) {
+          console.error('Failed to save text response to database:', err);
+        }
+      }
+    }
   };
 
   const saveAudioResponse = (audioBlob: Blob, audioDuration: number, timeSpent: number) => {
@@ -280,6 +300,36 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
       updatedResponses[s.currentStationIndex] = stationResponse;
       return { ...s, responses: updatedResponses };
     });
+  };
+
+  const saveAudioResponseToDB = async () => {
+    const stationIndex = session.currentStationIndex;
+    const response = session.responses[stationIndex];
+
+    if (!response || !user || !session.interviewId || !session.questionIds) {
+      return;
+    }
+
+    if (!session.questionIds[stationIndex]) {
+      console.error('Question ID not found for station:', stationIndex);
+      return;
+    }
+
+    try {
+      await saveResponseToDB(
+        session.interviewId,
+        stationIndex + 1, // Station number is 1-indexed in DB
+        session.questionIds[stationIndex],
+        {
+          response_text: response.response || response.transcription || '',
+          audio_duration_seconds: response.audioDuration || 0,
+          transcription_status: response.transcription ? 'completed' : undefined,
+          time_spent_seconds: response.timeSpent || 0,
+        }
+      );
+    } catch (err) {
+      console.error('Failed to save audio response to database:', err);
+    }
   };
 
   const updateTranscription = async (stationIndex: number, transcription: string, error?: string) => {
@@ -366,6 +416,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     resumeInterview,
     saveResponse,
     saveAudioResponse,
+    saveAudioResponseToDB,
     updateTranscription,
     nextStation,
     submitInterview,

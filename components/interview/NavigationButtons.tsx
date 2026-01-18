@@ -22,7 +22,7 @@ export default function NavigationButtons({
   timeSpent
 }: NavigationButtonsProps) {
   const router = useRouter();
-  const { session, saveResponse, updateTranscription, nextStation, submitInterview } = useInterview();
+  const { session, saveResponse, saveAudioResponseToDB, updateTranscription, nextStation, submitInterview } = useInterview();
   const { settings } = useDevSettings();
 
   const isLastStation = session.currentStationIndex === MMI_QUESTIONS.length - 1;
@@ -33,27 +33,31 @@ export default function NavigationButtons({
     ? (!!currentAudioRecording && !isRecording)
     : !!currentResponse.trim();
 
-  const handleNext = () => {
-    if (!isAudioMode) {
-      saveResponse(currentResponse, timeSpent);
-    }
+  const handleNext = async () => {
+    if (isAudioMode) {
+      // Save audio response to database immediately
+      await saveAudioResponseToDB();
 
-    // Trigger async transcription if audio mode AND Deepgram is enabled
-    if (isAudioMode && currentAudioRecording && settings.enableDeepgram) {
-      const stationIndex = session.currentStationIndex;
+      // Trigger async transcription if Deepgram is enabled
+      if (currentAudioRecording && settings.enableDeepgram) {
+        const stationIndex = session.currentStationIndex;
 
-      // Mark as pending immediately
-      updateTranscription(stationIndex, '');
+        // Mark as pending immediately
+        updateTranscription(stationIndex, '');
 
-      // Fire-and-forget async transcription
-      transcribeAudio(stationIndex, currentAudioRecording.blob)
-        .then(transcription => {
-          if (transcription) {
-            updateTranscription(stationIndex, transcription);
-          } else {
-            updateTranscription(stationIndex, '', 'Transcription failed');
-          }
-        });
+        // Fire-and-forget async transcription
+        transcribeAudio(stationIndex, currentAudioRecording.blob)
+          .then(transcription => {
+            if (transcription) {
+              updateTranscription(stationIndex, transcription);
+            } else {
+              updateTranscription(stationIndex, '', 'Transcription failed');
+            }
+          });
+      }
+    } else {
+      // Save text response
+      await saveResponse(currentResponse, timeSpent);
     }
 
     // Move to next station (don't wait for transcription)
@@ -61,26 +65,30 @@ export default function NavigationButtons({
   };
 
   const handleSubmit = async () => {
-    if (!isAudioMode) {
-      saveResponse(currentResponse, timeSpent);
-    }
+    if (isAudioMode) {
+      // Save audio response to database immediately
+      await saveAudioResponseToDB();
 
-    // Trigger async transcription for last station if audio mode AND Deepgram is enabled
-    if (isAudioMode && currentAudioRecording && settings.enableDeepgram) {
-      const stationIndex = session.currentStationIndex;
+      // Trigger async transcription for last station if Deepgram is enabled
+      if (currentAudioRecording && settings.enableDeepgram) {
+        const stationIndex = session.currentStationIndex;
 
-      // Mark as pending immediately
-      updateTranscription(stationIndex, '');
+        // Mark as pending immediately
+        updateTranscription(stationIndex, '');
 
-      // Fire-and-forget async transcription
-      transcribeAudio(stationIndex, currentAudioRecording.blob)
-        .then(transcription => {
-          if (transcription) {
-            updateTranscription(stationIndex, transcription);
-          } else {
-            updateTranscription(stationIndex, '', 'Transcription failed');
-          }
-        });
+        // Fire-and-forget async transcription
+        transcribeAudio(stationIndex, currentAudioRecording.blob)
+          .then(transcription => {
+            if (transcription) {
+              updateTranscription(stationIndex, transcription);
+            } else {
+              updateTranscription(stationIndex, '', 'Transcription failed');
+            }
+          });
+      }
+    } else {
+      // Save text response
+      await saveResponse(currentResponse, timeSpent);
     }
 
     // Submit interview and navigate to interview detail page (don't wait for transcription)
