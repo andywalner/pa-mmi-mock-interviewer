@@ -47,9 +47,27 @@ export default function StartButton() {
       </button>
 
       {quota && (
-        <p className={`text-sm text-center ${isLow ? 'text-yellow-600 font-medium' : 'text-gray-500'}`}>
-          {remaining} interview{remaining !== 1 ? 's' : ''} remaining this month
-        </p>
+        <div className="flex items-center justify-center gap-1">
+          <p className={`text-sm ${isLow ? 'text-yellow-600 font-medium' : 'text-gray-500'}`}>
+            {remaining} interview{remaining !== 1 ? 's' : ''} remaining this month
+          </p>
+          <div className="relative group">
+            <svg
+              className={`w-4 h-4 ${isLow ? 'text-yellow-600' : 'text-gray-400'} cursor-help`}
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+              Limit resets at the start of each month. Contact thepaprep@gmail.com if you need higher limits.
+            </div>
+          </div>
+        </div>
       )}
 
       {error && (
