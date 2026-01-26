@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Nunito } from 'next/font/google'
 import './globals.css'
 import { InterviewProvider } from '@/components/providers/InterviewProvider'
 import { DevSettingsProvider } from '@/components/providers/DevSettingsProvider'
@@ -7,7 +7,7 @@ import { AuthProvider } from '@/components/providers/AuthProvider'
 import DevSettingsPanel from '@/components/dev/DevSettingsPanel'
 import Header from '@/components/layout/Header'
 
-const inter = Inter({ subsets: ['latin'] })
+const nunito = Nunito({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'PA Mock Interviewer',
@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={nunito.className}>
         <AuthProvider>
           <DevSettingsProvider>
             <InterviewProvider>
