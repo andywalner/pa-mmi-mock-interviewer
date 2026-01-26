@@ -133,12 +133,18 @@ export default function LandingPage() {
 
         <div className="card max-w-2xl mx-auto space-y-6">
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">How It Works</h2>
-            <ol className="list-decimal list-inside space-y-2 text-gray-700">
-              <li>Complete 5 MMI stations by typing your responses</li>
-              <li>Each station has a 7-minute timer (not enforced)</li>
-              <li>Get detailed AI feedback on your performance</li>
-            </ol>
+            <h2 className="text-2xl font-semibold text-gray-900">Ready to Practice?</h2>
+            <div className="prose prose-gray max-w-none">
+              <p className="text-gray-700 leading-relaxed">
+                Each practice session walks you through multiple MMI stations with real scenarios you might encounter in your PA school interview. Take your time crafting thoughtful responses—there's no pressure to rush.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                After completing your interview, you'll receive personalized feedback on each response. Our AI analyzes your answers using frameworks developed by experienced PA advisors who know what admissions committees look for.
+              </p>
+              <p className="text-sm text-medical-700 bg-medical-50 border border-medical-200 rounded-lg p-4">
+                <span className="font-semibold">Helpful tip:</span> The best way to prepare is to practice regularly. Each interview helps you refine your communication style and build confidence for the real thing.
+              </p>
+            </div>
           </div>
 
           <div className="border-t border-gray-200 pt-6">
