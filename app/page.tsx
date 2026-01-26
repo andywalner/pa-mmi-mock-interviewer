@@ -121,36 +121,71 @@ export default function LandingPage() {
   // Show authenticated landing page with start button
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="max-w-4xl w-full space-y-12">
-        <div className="text-center space-y-4">
-          <h1 className="text-5xl font-bold text-gray-900">
-            PA Mock Interviewer
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Practice your Physician Assistant Multiple Mini Interview with AI-powered feedback
-          </p>
-        </div>
-
-        <div className="card max-w-2xl mx-auto space-y-6">
+      <div className="max-w-4xl w-full space-y-16">
+        {/* Hero Section */}
+        <div className="text-center space-y-8">
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">Ready to Practice?</h2>
-            <div className="prose prose-gray max-w-none">
-              <p className="text-gray-700 leading-relaxed">
-                Each practice session walks you through multiple MMI stations with real scenarios you might encounter in your PA school interview. Take your time crafting thoughtful responses—there's no pressure to rush.
-              </p>
-              <p className="text-gray-700 leading-relaxed">
-                After completing your interview, you'll receive personalized feedback on each response. Our AI analyzes your answers using frameworks developed by experienced PA advisors who know what admissions committees look for.
-              </p>
-              <p className="text-sm text-medical-700 bg-medical-50 border border-medical-200 rounded-lg p-4">
-                <span className="font-semibold">Helpful tip:</span> The best way to prepare is to practice regularly. Each interview helps you refine your communication style and build confidence for the real thing.
-              </p>
+            <h1 className="text-5xl font-bold text-gray-900">
+              PA Mock Interviewer
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Practice speaking your answers and get expert feedback to ace your PA interview
+            </p>
+          </div>
+
+          {/* Value Props */}
+          <div className="max-w-3xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Point 1: Record */}
+              <div className="text-center space-y-3">
+                <div className="flex justify-center">
+                  <div className="w-12 h-12 bg-medical-100 text-medical-700 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                      <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="font-semibold text-gray-900">Record Your Responses</h3>
+                <p className="text-sm text-gray-600">
+                  Speak your answers out loud to simulate a real interview experience
+                </p>
+              </div>
+
+              {/* Point 2: Get Feedback */}
+              <div className="text-center space-y-3">
+                <div className="flex justify-center">
+                  <div className="w-12 h-12 bg-medical-100 text-medical-700 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                      <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="font-semibold text-gray-900">Get Scored & Tips</h3>
+                <p className="text-sm text-gray-600">
+                  Our rubric rates your communication, critical thinking, and more with actionable advice on how to improve
+                </p>
+              </div>
+
+              {/* Point 3: Practice & Improve */}
+              <div className="text-center space-y-3">
+                <div className="flex justify-center">
+                  <div className="w-12 h-12 bg-medical-100 text-medical-700 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                      <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="font-semibold text-gray-900">Practice & Improve</h3>
+                <p className="text-sm text-gray-600">
+                  Review your feedback and practice as often as you'd like to build confidence
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="border-t border-gray-200 pt-6">
-            <div className="flex justify-center">
-              <StartButton />
-            </div>
+          {/* Prominent CTA */}
+          <div className="flex flex-col items-center">
+            <StartButton />
           </div>
         </div>
 
