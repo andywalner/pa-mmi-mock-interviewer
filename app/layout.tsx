@@ -10,7 +10,7 @@ import Header from '@/components/layout/Header'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'PA MMI Mock Interviewer',
+  title: 'PA Mock Interviewer',
   description: 'Practice your Physician Assistant MMI interviews with AI feedback',
 }
 

@@ -23,11 +23,6 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Don't show header on auth page
-  if (pathname === '/auth') {
-    return null
-  }
-
   return (
     <header className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,9 +59,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center space-x-4">
-            {loading ? (
-              <div className="text-sm text-gray-500">Loading...</div>
-            ) : user ? (
+            {user && (
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -107,13 +100,6 @@ export default function Header() {
                   </div>
                 )}
               </div>
-            ) : (
-              <Link
-                href="/auth"
-                className="px-4 py-2 text-sm font-medium text-white bg-medical-600 hover:bg-medical-700 rounded-md transition"
-              >
-                Sign In
-              </Link>
             )}
           </div>
         </div>

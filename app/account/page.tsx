@@ -24,7 +24,7 @@ export default function AccountPage() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/auth')
+      router.push('/')
     }
   }, [user, authLoading, router])
 

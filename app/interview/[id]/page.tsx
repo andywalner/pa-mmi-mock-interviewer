@@ -23,7 +23,7 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/auth')
+      router.push('/')
     }
   }, [user, authLoading, router])
 

@@ -18,7 +18,7 @@ export default function HistoryPage() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/auth')
+      router.push('/')
     }
   }, [user, authLoading, router])
 

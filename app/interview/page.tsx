@@ -30,7 +30,7 @@ export default function InterviewPage() {
   // Auth check - middleware will redirect, but show loading state
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/auth');
+      router.push('/');
     }
   }, [user, loading, router]);
 

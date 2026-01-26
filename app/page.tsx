@@ -8,6 +8,7 @@ import { getUserInterviews } from '@/lib/services/interviewService'
 import { MMI_QUESTIONS } from '@/lib/questions'
 import { formatLocalDateTime } from '@/lib/dateUtils'
 import StartButton from '@/components/landing/StartButton'
+import AuthForm from '@/components/auth/AuthForm'
 import type { Database } from '@/types/supabase'
 
 type Interview = Database['public']['Tables']['interviews']['Row']
@@ -47,12 +48,83 @@ export default function LandingPage() {
     router.push('/interview')
   }
 
+  // Show combined landing/auth page for non-authenticated users
+  if (!user) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-medical-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left Column: Value Propositions */}
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+                  PA Mock Interviewer
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  Practice with real PA school interview scenarios and get AI-powered feedback designed by experienced PA advisors
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <h2 className="text-2xl font-semibold text-gray-900">How It Works</h2>
+
+                <div className="space-y-4">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-medical-100 text-medical-700 rounded-full flex items-center justify-center font-semibold">
+                      1
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-1">Practice Real Scenarios</h3>
+                      <p className="text-gray-600">
+                        Answer MMI questions curated from actual student interviews and common PA program scenarios.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-medical-100 text-medical-700 rounded-full flex items-center justify-center font-semibold">
+                      2
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-1">Get Expert Feedback</h3>
+                      <p className="text-gray-600">
+                        Receive detailed analysis on your strengths and areas to improve, based on feedback frameworks developed by our advisor team.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-medical-100 text-medical-700 rounded-full flex items-center justify-center font-semibold">
+                      3
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-1">Track Your Progress</h3>
+                      <p className="text-gray-600">
+                        Review past interviews and practice as many times as you need to build confidence.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Auth Form */}
+            <div className="lg:pl-8">
+              <AuthForm />
+            </div>
+          </div>
+        </div>
+      </main>
+    )
+  }
+
+  // Show authenticated landing page with start button
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
       <div className="max-w-4xl w-full space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-5xl font-bold text-gray-900">
-            PA MMI <span className="text-medical-500">Mock Interviewer</span>
+            PA Mock Interviewer
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Practice your Physician Assistant Multiple Mini Interview with AI-powered feedback
