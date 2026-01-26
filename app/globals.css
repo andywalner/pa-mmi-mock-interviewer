@@ -4,43 +4,68 @@
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-medical-50 to-white min-h-screen;
+    @apply min-h-screen;
+    background-color: #F5DBDF; /* brand-core-light */
+    color: black;
+  }
+
+  a {
+    @apply text-brand-secondary-maroon hover:text-brand-secondary-rose transition-colors;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-medical-500 hover:bg-medical-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg;
+    @apply font-semibold py-3 px-6 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg;
+    background-color: #80373A; /* brand-secondary-maroon */
+    color: white;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: #E18384; /* brand-secondary-rose */
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-medical-50 text-medical-600 font-semibold py-3 px-6 rounded-lg transition-colors duration-200 border-2 border-medical-500;
+    @apply bg-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 border-2;
+    border-color: #80373A; /* brand-secondary-maroon */
+    color: #80373A;
+  }
+
+  .btn-secondary:hover {
+    background-color: #E18384; /* brand-secondary-rose */
+    color: white;
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-lg p-6 border border-medical-100;
+    @apply bg-white rounded-xl shadow-lg p-6;
+    border: 1px solid #EED2D5; /* brand-secondary-light */
   }
 
   .station-prompt {
-    @apply bg-medical-50 border-l-4 border-medical-500 p-6 rounded-r-lg mb-6;
+    @apply p-6 rounded-r-lg mb-6;
+    background-color: #F5DBDF; /* brand-core-light */
+    border-left: 4px solid #80373A; /* brand-secondary-maroon */
   }
 
   .progress-bar {
-    @apply bg-medical-200 rounded-full h-2 overflow-hidden;
+    @apply rounded-full h-2 overflow-hidden;
+    background-color: #F7B8C2; /* brand-core-pink */
   }
 
   .progress-fill {
-    @apply bg-medical-500 h-full transition-all duration-300;
+    @apply h-full transition-all duration-300;
+    background-color: #80373A; /* brand-secondary-maroon */
   }
 
   .prose-medical {
-    @apply prose-headings:text-medical-700 prose-a:text-medical-600 prose-strong:text-medical-700;
+    @apply prose-headings:text-brand-secondary-maroon prose-a:text-brand-secondary-maroon prose-strong:text-brand-secondary-maroon;
   }
 
   .prose-medical h1,
   .prose-medical h2,
   .prose-medical h3 {
-    @apply border-b-2 border-medical-200 pb-2 mb-4;
+    @apply pb-2 mb-4;
+    border-bottom: 2px solid #F7B8C2; /* brand-core-pink */
   }
 
   .prose-medical table {
@@ -48,14 +73,20 @@
   }
 
   .prose-medical th {
-    @apply bg-medical-100 text-medical-800 font-semibold px-4 py-2 border border-medical-300;
+    @apply font-semibold px-4 py-2;
+    background-color: #EED2D5; /* brand-secondary-light */
+    color: #80373A; /* brand-secondary-maroon */
+    border: 1px solid #F7B8C2; /* brand-core-pink */
   }
 
   .prose-medical td {
-    @apply px-4 py-2 border border-medical-200;
+    @apply px-4 py-2;
+    border: 1px solid #F7B8C2; /* brand-core-pink */
   }
 
   .prose-medical blockquote {
-    @apply border-l-4 border-medical-400 bg-medical-50 pl-4 py-2 italic;
+    @apply pl-4 py-2 italic;
+    border-left: 4px solid #B74847; /* brand-secondary-brick */
+    background-color: #F5DBDF; /* brand-core-light */
   }
 }

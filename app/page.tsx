@@ -51,7 +51,7 @@ export default function LandingPage() {
   // Show combined landing/auth page for non-authenticated users
   if (!user) {
     return (
-      <main className="min-h-screen bg-gradient-to-br from-medical-50 to-white">
+      <main className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Column: Value Propositions */}
