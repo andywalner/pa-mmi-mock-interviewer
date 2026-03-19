@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
 
     const userMessage = formatResponsesForEvaluation(responses);
 
-    // Use model from dev settings, fallback to env variable, then default to Sonnet 4.5
-    const selectedModel = model ? getClaudeModelId(model) : (process.env.CLAUDE_MODEL || 'claude-sonnet-4-5-20250929');
+    // Use model from dev settings, fallback to env variable, then default to Sonnet 4.6
+    const selectedModel = model ? getClaudeModelId(model) : (process.env.CLAUDE_MODEL || 'claude-sonnet-4-6-20250929');
 
     const message = await anthropic.messages.create({
       model: selectedModel,
