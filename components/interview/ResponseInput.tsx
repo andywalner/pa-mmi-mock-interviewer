@@ -47,7 +47,7 @@ export default function ResponseInput({ value, onChange }: ResponseInputProps) {
         autoFocus
       />
       <p className="text-sm text-gray-500 mt-2">
-        In a real MMI, you would speak your answer. For this practice, type what you would say.
+        Type what you would say in response to this question.
       </p>
     </div>
   );

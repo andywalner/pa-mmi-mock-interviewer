@@ -1,12 +1,12 @@
 'use client';
 
 import { useInterview } from '@/components/providers/InterviewProvider';
-import { MMI_QUESTIONS } from '@/lib/questions';
+import { NUM_STATIONS } from '@/lib/questions';
 
 export default function ProgressIndicator() {
   const { session } = useInterview();
   const currentStation = session.currentStationIndex + 1;
-  const totalStations = MMI_QUESTIONS.length;
+  const totalStations = NUM_STATIONS;
   const progress = (currentStation / totalStations) * 100;
 
   return (

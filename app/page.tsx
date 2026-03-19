@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/providers/AuthProvider'
 import { useInterview } from '@/components/providers/InterviewProvider'
 import { getUserInterviews } from '@/lib/services/interviewService'
-import { MMI_QUESTIONS } from '@/lib/questions'
+import { NUM_STATIONS } from '@/lib/questions'
 import { formatLocalDateTime } from '@/lib/dateUtils'
 import StartButton from '@/components/landing/StartButton'
 import AuthForm from '@/components/auth/AuthForm'
@@ -76,7 +76,7 @@ export default function LandingPage() {
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-1">Practice Real Scenarios</h3>
                       <p className="text-gray-600">
-                        Answer MMI questions curated from actual student interviews and common PA program scenarios.
+                        Answer Multiple Mini Interview (MMI) questions curated from actual student interviews and common PA program scenarios.
                       </p>
                     </div>
                   </div>
@@ -207,7 +207,7 @@ export default function LandingPage() {
                         </span>
                       </div>
                       <p className="text-sm text-gray-600">
-                        Station {(interview.current_station_index || 0) + 1} of {MMI_QUESTIONS.length}
+                        Station {(interview.current_station_index || 0) + 1} of {NUM_STATIONS}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
                         Started {formatLocalDateTime(interview.started_at || interview.created_at, {

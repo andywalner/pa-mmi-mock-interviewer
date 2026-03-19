@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/supabase'
+import { STATION_CONFIG } from '@/lib/questions'
 
 type Interview = Database['public']['Tables']['interviews']['Row']
 type InterviewInsert = Database['public']['Tables']['interviews']['Insert']
@@ -8,9 +9,82 @@ type ResponseInsert = Database['public']['Tables']['responses']['Insert']
 type Evaluation = Database['public']['Tables']['evaluations']['Row']
 type EvaluationInsert = Database['public']['Tables']['evaluations']['Insert']
 
+export interface ResponseWithQuestion extends Response {
+  question?: { id: string; prompt: string; category: string | null } | null
+}
+
 export interface InterviewWithResponses extends Interview {
-  responses: Response[]
+  responses: ResponseWithQuestion[]
   evaluation?: Evaluation
+}
+
+/**
+ * Fetch all active questions for an interview type, pick one random per category
+ */
+export async function fetchRandomQuestions(
+  interviewTypeId: string
+): Promise<{ data: { id: string; category: string; prompt: string }[] | null; error: Error | null }> {
+  const supabase = createClient()
+
+  const { data: questions, error } = await supabase
+    .from('questions')
+    .select('id, category, prompt')
+    .eq('interview_type_id', interviewTypeId)
+    .eq('is_active', true)
+
+  if (error || !questions) {
+    return { data: null, error: error ? new Error(error.message) : new Error('No questions found') }
+  }
+
+  // Group by category
+  const byCategory: Record<string, typeof questions> = {}
+  for (const q of questions) {
+    const cat = q.category || 'uncategorized'
+    if (!byCategory[cat]) byCategory[cat] = []
+    byCategory[cat].push(q)
+  }
+
+  // Pick one random from each category, in STATION_CONFIG order
+  const selected: { id: string; category: string; prompt: string }[] = []
+  for (const config of STATION_CONFIG) {
+    const pool = byCategory[config.category]
+    if (pool && pool.length > 0) {
+      const randomIndex = Math.floor(Math.random() * pool.length)
+      selected.push({
+        id: pool[randomIndex].id,
+        category: pool[randomIndex].category || config.category,
+        prompt: pool[randomIndex].prompt,
+      })
+    }
+  }
+
+  return { data: selected, error: null }
+}
+
+/**
+ * Fetch questions by IDs, preserving the input order (for resume)
+ */
+export async function fetchQuestionsByIds(
+  ids: string[]
+): Promise<{ data: { id: string; category: string; prompt: string }[] | null; error: Error | null }> {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('questions')
+    .select('id, category, prompt')
+    .in('id', ids)
+
+  if (error) {
+    return { data: null, error: new Error(error.message) }
+  }
+
+  // Reorder to match input order
+  const ordered = ids
+    .map(id => data?.find(q => q.id === id))
+    .filter((q): q is { id: string; category: string | null; prompt: string } => q != null)
+    .map(q => ({ ...q, category: q.category || '' }))
+
+  return { data: ordered, error: null }
 }
 
 /**
@@ -19,7 +93,8 @@ export interface InterviewWithResponses extends Interview {
 export async function createInterview(
   userId: string,
   interviewTypeId: string,
-  schoolName?: string
+  schoolName?: string,
+  settings?: Record<string, unknown>
 ): Promise<{ data: Interview | null; error: Error | null }> {
   const supabase = createClient()
 
@@ -30,6 +105,7 @@ export async function createInterview(
     school_name: schoolName,
     current_station_index: 0,
     started_at: new Date().toISOString(),
+    settings: (settings as Database['public']['Tables']['interviews']['Insert']['settings']) || null,
   }
 
   const { data, error } = await supabase
@@ -177,7 +253,7 @@ export async function completeInterview(
 }
 
 /**
- * Load an interview with all its responses
+ * Load an interview with all its responses and joined question data
  */
 export async function loadInterview(
   interviewId: string
@@ -194,14 +270,28 @@ export async function loadInterview(
     return { data: null, error: new Error(interviewError.message) }
   }
 
-  const { data: responses, error: responsesError } = await supabase
+  // Try to join question data; fall back to plain responses if join fails
+  let responses: ResponseWithQuestion[] = []
+  const { data: joinedResponses, error: joinError } = await supabase
     .from('responses')
-    .select('*')
+    .select('*, question:questions(id, prompt, category)')
     .eq('interview_id', interviewId)
     .order('station_number', { ascending: true })
 
-  if (responsesError) {
-    return { data: null, error: new Error(responsesError.message) }
+  if (joinError) {
+    // Fallback: fetch responses without question join
+    const { data: plainResponses, error: plainError } = await supabase
+      .from('responses')
+      .select('*')
+      .eq('interview_id', interviewId)
+      .order('station_number', { ascending: true })
+
+    if (plainError) {
+      return { data: null, error: new Error(plainError.message) }
+    }
+    responses = (plainResponses || []) as ResponseWithQuestion[]
+  } else {
+    responses = (joinedResponses || []) as ResponseWithQuestion[]
   }
 
   const { data: evaluation } = await supabase
@@ -213,7 +303,7 @@ export async function loadInterview(
   return {
     data: {
       ...interview,
-      responses: responses || [],
+      responses: (responses || []) as ResponseWithQuestion[],
       evaluation: evaluation || undefined,
     },
     error: null,
@@ -303,7 +393,7 @@ export async function getDefaultInterviewTypeId(): Promise<{
 }
 
 /**
- * Get the most recent in-progress interview for a user
+ * Get the most recent in-progress interview for a user, with joined question data
  */
 export async function getInProgressInterview(
   userId: string
@@ -346,7 +436,7 @@ export async function getInProgressInterview(
   return {
     data: {
       ...interview,
-      responses: responses || [],
+      responses: (responses || []) as ResponseWithQuestion[],
       evaluation: evaluation || undefined,
     },
     error: null,

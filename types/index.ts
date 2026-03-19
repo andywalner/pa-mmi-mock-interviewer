@@ -4,8 +4,8 @@ export interface School {
 }
 
 export interface MMIQuestion {
-  id: number;
-  station: number;
+  id: string;
+  category: string;
   prompt: string;
   timeLimit: number;
 }
@@ -29,6 +29,7 @@ export interface InterviewSession {
   isComplete: boolean;
   interviewId?: string; // Database interview ID
   questionIds?: string[]; // Database question IDs for each station
+  questions?: MMIQuestion[]; // Loaded question objects for the session
 }
 
 export interface InterviewContextType {

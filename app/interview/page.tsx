@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useInterview } from '@/components/providers/InterviewProvider';
 import { useDevSettings } from '@/components/providers/DevSettingsProvider';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { MMI_QUESTIONS } from '@/lib/questions';
 import ProgressIndicator from '@/components/interview/ProgressIndicator';
 import StationTimer from '@/components/interview/StationTimer';
 import StationPrompt from '@/components/interview/StationPrompt';
@@ -24,7 +23,7 @@ export default function InterviewPage() {
   const [isCurrentlyRecording, setIsCurrentlyRecording] = useState(false);
 
   const isAudioMode = settings.enableAudioMode;
-  const currentQuestion = MMI_QUESTIONS[session.currentStationIndex];
+  const currentQuestion = session.questions?.[session.currentStationIndex];
   const savedResponse = session.responses[session.currentStationIndex];
 
   // Auth check - middleware will redirect, but show loading state
@@ -74,7 +73,18 @@ export default function InterviewPage() {
   }, [session.currentStationIndex, savedResponse, isAudioMode]);
 
   if (!currentQuestion) {
-    return null;
+    console.log('[InterviewPage] no currentQuestion!', {
+      currentStationIndex: session.currentStationIndex,
+      questionsLength: session.questions?.length,
+      questions: session.questions?.map(q => q.id),
+      interviewId: session.interviewId,
+      questionIds: session.questionIds,
+    });
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-gray-600">Loading questions...</div>
+      </div>
+    );
   }
 
   const handleResponseChange = (value: string) => {

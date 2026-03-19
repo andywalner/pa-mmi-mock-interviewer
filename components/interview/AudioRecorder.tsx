@@ -287,7 +287,7 @@ export default function AudioRecorder({
                 </button>
                 <button
                   onClick={stopRecording}
-                  className="bg-medical-600 hover:bg-medical-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex-1 flex items-center justify-center gap-2"
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex-1 flex items-center justify-center gap-2"
                 >
                   <span className="text-xl">✓</span>
                   Done
@@ -306,7 +306,7 @@ export default function AudioRecorder({
                 </button>
                 <button
                   onClick={stopRecording}
-                  className="bg-medical-600 hover:bg-medical-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex-1 flex items-center justify-center gap-2"
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex-1 flex items-center justify-center gap-2"
                 >
                   <span className="text-xl">✓</span>
                   Done
@@ -334,7 +334,7 @@ export default function AudioRecorder({
         </div>
 
         <p className="text-sm text-gray-500 mt-4">
-          💡 In a real MMI, you would speak your answer. Click "Start Recording" to begin.
+          Click &quot;Start Recording&quot; to begin.
           You can pause and resume as needed. Maximum recording duration: {formatTime(maxDuration)}
         </p>
       </div>

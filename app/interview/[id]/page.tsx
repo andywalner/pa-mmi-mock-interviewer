@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/providers/AuthProvider'
 import { useDevSettings } from '@/components/providers/DevSettingsProvider'
 import { loadInterview, saveEvaluation, type InterviewWithResponses } from '@/lib/services/interviewService'
-import { MMI_QUESTIONS } from '@/lib/questions'
+import { CATEGORY_LABELS } from '@/lib/questions'
 import { formatLocalDateTime } from '@/lib/dateUtils'
 import LoadingState from '@/components/feedback/LoadingState'
 import ReactMarkdown from 'react-markdown'
@@ -80,9 +80,10 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
       }
 
       // Convert interview responses to the format expected by the API
+      // Use joined question data from DB
       const responses = interview.responses.map(r => ({
-        stationId: MMI_QUESTIONS[r.station_number - 1]?.id || r.station_number,
-        question: MMI_QUESTIONS[r.station_number - 1]?.prompt || '',
+        stationId: r.station_number,
+        question: r.question?.prompt || '',
         response: r.response_text || '',
         timeSpent: r.time_spent_seconds || 0,
       }))
@@ -294,14 +295,28 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
             interview.responses.map((response, idx) => (
               <div key={response.id} className="card">
                 <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Station {response.station_number}
-                  </h3>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Station {response.station_number}
+                    </h3>
+                    {response.question?.category && (
+                      <p className="text-sm text-gray-500">
+                        {CATEGORY_LABELS[response.question.category] || response.question.category}
+                      </p>
+                    )}
+                  </div>
                   <span className="text-sm text-gray-500">
                     Time: {Math.floor((response.time_spent_seconds || 0) / 60)}:
                     {String((response.time_spent_seconds || 0) % 60).padStart(2, '0')}
                   </span>
                 </div>
+
+                {response.question?.prompt && (
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-gray-700 mb-1">Question:</p>
+                    <p className="text-gray-800 text-sm italic">{response.question.prompt}</p>
+                  </div>
+                )}
 
                 <div className="space-y-4">
                   <div>

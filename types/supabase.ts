@@ -161,7 +161,6 @@ export type Database = {
           interview_type_id: string
           is_active: boolean | null
           prompt: string
-          station_number: number | null
           updated_at: string | null
         }
         Insert: {
@@ -171,7 +170,6 @@ export type Database = {
           interview_type_id: string
           is_active?: boolean | null
           prompt: string
-          station_number?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -181,7 +179,6 @@ export type Database = {
           interview_type_id?: string
           is_active?: boolean | null
           prompt?: string
-          station_number?: number | null
           updated_at?: string | null
         }
         Relationships: [

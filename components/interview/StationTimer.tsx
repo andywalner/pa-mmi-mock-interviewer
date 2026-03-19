@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { formatTime } from '@/lib/utils';
-import { MMI_QUESTIONS } from '@/lib/questions';
+import { STATION_CONFIG } from '@/lib/questions';
 
 interface StationTimerProps {
   stationIndex: number;
@@ -10,7 +10,7 @@ interface StationTimerProps {
 }
 
 export default function StationTimer({ stationIndex, onTimeUpdate }: StationTimerProps) {
-  const timeLimit = MMI_QUESTIONS[stationIndex]?.timeLimit || 420;
+  const timeLimit = STATION_CONFIG[stationIndex]?.timeLimit || 420;
   const [startTime] = useState(Date.now());
   const [elapsed, setElapsed] = useState(0);
 

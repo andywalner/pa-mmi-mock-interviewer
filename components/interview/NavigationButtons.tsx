@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useInterview } from '@/components/providers/InterviewProvider';
 import { useDevSettings } from '@/components/providers/DevSettingsProvider';
-import { MMI_QUESTIONS } from '@/lib/questions';
+import { NUM_STATIONS } from '@/lib/questions';
 import { transcribeAudio } from '@/lib/transcriptionService';
 
 interface NavigationButtonsProps {
@@ -25,7 +25,7 @@ export default function NavigationButtons({
   const { session, saveResponse, saveAudioResponseToDB, updateTranscription, nextStation, submitInterview } = useInterview();
   const { settings } = useDevSettings();
 
-  const isLastStation = session.currentStationIndex === MMI_QUESTIONS.length - 1;
+  const isLastStation = session.currentStationIndex === NUM_STATIONS - 1;
 
   // Check if response is provided based on mode
   // In audio mode: must have recording AND not currently recording (i.e., preview showing)

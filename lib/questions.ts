@@ -1,34 +1,17 @@
-import { MMIQuestion } from '@/types';
-
-export const MMI_QUESTIONS: MMIQuestion[] = [
-  {
-    id: 1,
-    station: 1,
-    prompt: 'A fellow student asks to copy your homework. What do you do?',
-    timeLimit: 420
-  },
-  {
-    id: 2,
-    station: 2,
-    prompt: 'Describe a time you had to work with someone difficult. How did you handle it?',
-    timeLimit: 420
-  },
-  {
-    id: 3,
-    station: 3,
-    prompt: 'Should healthcare be free for everyone? Discuss both sides.',
-    timeLimit: 420
-  },
-  {
-    id: 4,
-    station: 4,
-    prompt: 'You notice a colleague making a mistake with a patient. What do you do?',
-    timeLimit: 420
-  },
-  {
-    id: 5,
-    station: 5,
-    prompt: 'Why do you want to become a Physician Assistant?',
-    timeLimit: 420
-  }
+export const STATION_CONFIG = [
+  { category: 'academic-integrity', timeLimit: 420 },
+  { category: 'teamwork-conflict', timeLimit: 420 },
+  { category: 'healthcare-policy', timeLimit: 420 },
+  { category: 'professional-responsibility', timeLimit: 420 },
+  { category: 'personal-motivation', timeLimit: 420 },
 ];
+
+export const NUM_STATIONS = STATION_CONFIG.length;
+
+export const CATEGORY_LABELS: Record<string, string> = {
+  'academic-integrity': 'Academic Integrity',
+  'teamwork-conflict': 'Teamwork & Conflict Resolution',
+  'healthcare-policy': 'Healthcare Policy',
+  'professional-responsibility': 'Professional Responsibility',
+  'personal-motivation': 'Personal Motivation',
+};
