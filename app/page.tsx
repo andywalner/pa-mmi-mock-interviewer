@@ -202,8 +202,8 @@ export default function LandingPage() {
 
   // Show authenticated landing page with start button
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="max-w-4xl w-full space-y-16">
+    <main className="min-h-screen flex flex-col items-center justify-center pt-8 overflow-hidden">
+      <div className="max-w-4xl w-full space-y-16 px-8">
         {/* Hero Section */}
         <div className="text-center space-y-8">
           <div className="space-y-4">
@@ -320,6 +320,31 @@ export default function LandingPage() {
           </div>
         )}
       </div>
+
+      {inProgressInterviews.length === 0 && !loading && (
+        <div className="overflow-hidden w-full space-y-3 mt-6 pb-12">
+          <div className="flex animate-scroll-left hover:[animation-play-state:paused] w-max">
+            {[...SAMPLE_QUESTIONS.slice(0, 6), ...SAMPLE_QUESTIONS.slice(0, 6)].map((q, i) => (
+              <div key={i} className="flex-shrink-0 w-80 bg-white border border-gray-200 rounded-lg p-5 shadow-sm mx-2">
+                <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full mb-3 ${CATEGORY_CHIP_COLORS[q.category] || 'bg-gray-100 text-gray-700'}`}>
+                  {CATEGORY_LABELS[q.category] || q.category}
+                </span>
+                <p className="text-gray-900 leading-relaxed text-sm">{q.prompt}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex animate-scroll-right hover:[animation-play-state:paused] w-max">
+            {[...SAMPLE_QUESTIONS.slice(6), ...SAMPLE_QUESTIONS.slice(6)].map((q, i) => (
+              <div key={i} className="flex-shrink-0 w-80 bg-white border border-gray-200 rounded-lg p-5 shadow-sm mx-2">
+                <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full mb-3 ${CATEGORY_CHIP_COLORS[q.category] || 'bg-gray-100 text-gray-700'}`}>
+                  {CATEGORY_LABELS[q.category] || q.category}
+                </span>
+                <p className="text-gray-900 leading-relaxed text-sm">{q.prompt}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   )
 }
