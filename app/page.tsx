@@ -5,13 +5,72 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/providers/AuthProvider'
 import { useInterview } from '@/components/providers/InterviewProvider'
 import { getUserInterviews } from '@/lib/services/interviewService'
-import { NUM_STATIONS } from '@/lib/questions'
+import { NUM_STATIONS, CATEGORY_LABELS } from '@/lib/questions'
 import { formatLocalDateTime } from '@/lib/dateUtils'
 import StartButton from '@/components/landing/StartButton'
 import AuthForm from '@/components/auth/AuthForm'
 import type { Database } from '@/types/supabase'
 
 type Interview = Database['public']['Tables']['interviews']['Row']
+
+const SAMPLE_QUESTIONS = [
+  {
+    category: 'academic-integrity',
+    prompt: 'Your preceptor asks you to document something in a patient\'s chart that you didn\'t actually do. What would you do?',
+  },
+  {
+    category: 'teamwork-conflict',
+    prompt: 'You witness a colleague make an error that could harm a patient, and they ask you not to report it. How would you handle this situation?',
+  },
+  {
+    category: 'healthcare-policy',
+    prompt: 'Is healthcare a right or a privilege? Defend your position.',
+  },
+  {
+    category: 'professional-responsibility',
+    prompt: 'A patient refuses a life-saving blood transfusion due to religious or cultural beliefs. How would you handle this situation?',
+  },
+  {
+    category: 'personal-motivation',
+    prompt: 'Why do you want to become a Physician Assistant specifically, rather than pursuing another healthcare profession?',
+  },
+  {
+    category: 'professional-responsibility',
+    prompt: 'A patient\'s family asks you not to tell the patient about their cancer diagnosis because of cultural beliefs. The patient is asking you directly about their test results. What do you do?',
+  },
+  {
+    category: 'teamwork-conflict',
+    prompt: 'You witness a physician speaking disrespectfully to a nurse in front of patients and staff. What\'s your response?',
+  },
+  {
+    category: 'healthcare-policy',
+    prompt: 'What role should social determinants of health play in clinical decision-making?',
+  },
+  {
+    category: 'personal-motivation',
+    prompt: 'Describe a moment in your healthcare experience that confirmed your desire to become a PA.',
+  },
+  {
+    category: 'academic-integrity',
+    prompt: 'You witness another student looking at their phone during a practical exam where this is explicitly prohibited. What do you do?',
+  },
+  {
+    category: 'professional-responsibility',
+    prompt: 'A mother refuses a recommended vaccine for her 15-year-old daughter due to personal beliefs. How would you approach this conversation?',
+  },
+  {
+    category: 'teamwork-conflict',
+    prompt: 'Your supervising physician asks you to discharge a patient you believe needs further observation. How do you handle this disagreement?',
+  },
+]
+
+const CATEGORY_CHIP_COLORS: Record<string, string> = {
+  'academic-integrity': 'bg-blue-100 text-blue-700',
+  'teamwork-conflict': 'bg-amber-100 text-amber-700',
+  'healthcare-policy': 'bg-emerald-100 text-emerald-700',
+  'professional-responsibility': 'bg-purple-100 text-purple-700',
+  'personal-motivation': 'bg-rose-100 text-rose-700',
+}
 
 export default function LandingPage() {
   const router = useRouter()
@@ -112,6 +171,29 @@ export default function LandingPage() {
             <div className="lg:pl-8">
               <AuthForm />
             </div>
+          </div>
+
+        </div>
+        <div className="overflow-hidden w-full space-y-3 mt-6 pb-12">
+          <div className="flex animate-scroll-left hover:[animation-play-state:paused] w-max">
+            {[...SAMPLE_QUESTIONS.slice(0, 6), ...SAMPLE_QUESTIONS.slice(0, 6)].map((q, i) => (
+              <div key={i} className="flex-shrink-0 w-80 bg-white border border-gray-200 rounded-lg p-5 shadow-sm mx-2">
+                <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full mb-3 ${CATEGORY_CHIP_COLORS[q.category] || 'bg-gray-100 text-gray-700'}`}>
+                  {CATEGORY_LABELS[q.category] || q.category}
+                </span>
+                <p className="text-gray-900 leading-relaxed text-sm">{q.prompt}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex animate-scroll-right hover:[animation-play-state:paused] w-max">
+            {[...SAMPLE_QUESTIONS.slice(6), ...SAMPLE_QUESTIONS.slice(6)].map((q, i) => (
+              <div key={i} className="flex-shrink-0 w-80 bg-white border border-gray-200 rounded-lg p-5 shadow-sm mx-2">
+                <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full mb-3 ${CATEGORY_CHIP_COLORS[q.category] || 'bg-gray-100 text-gray-700'}`}>
+                  {CATEGORY_LABELS[q.category] || q.category}
+                </span>
+                <p className="text-gray-900 leading-relaxed text-sm">{q.prompt}</p>
+              </div>
+            ))}
           </div>
         </div>
       </main>

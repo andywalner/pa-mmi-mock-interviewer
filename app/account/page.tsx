@@ -19,7 +19,6 @@ export default function AccountPage() {
 
   // Form state
   const [fullName, setFullName] = useState('')
-  const [displayName, setDisplayName] = useState('')
   const [quota, setQuota] = useState<{ count: number; limit: number } | null>(null)
 
   useEffect(() => {
@@ -55,7 +54,6 @@ export default function AccountPage() {
       } else if (data) {
         setProfile(data)
         setFullName(data.full_name || '')
-        setDisplayName(data.display_name || '')
       }
     } catch (err) {
       console.error('Error:', err)
@@ -101,7 +99,6 @@ export default function AccountPage() {
         .from('user_profiles')
         .update({
           full_name: fullName,
-          display_name: displayName,
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id)
@@ -193,23 +190,6 @@ export default function AccountPage() {
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent"
                   placeholder="John Doe"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="displayName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Display Name (Optional)
-                </label>
-                <input
-                  type="text"
-                  id="displayName"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent"
-                  placeholder="John"
                 />
               </div>
 

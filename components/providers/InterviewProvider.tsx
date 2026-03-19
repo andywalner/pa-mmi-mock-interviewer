@@ -240,7 +240,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
         throw new Error(
           `You've reached your limit of ${limit} interviews this month. ` +
           `Your quota resets on the 1st. For additional interview credits, ` +
-          `please contact thepaprep@gmail.com`
+          `please contact advisors@thepaprep.com`
         )
       }
 
