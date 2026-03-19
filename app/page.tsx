@@ -145,7 +145,7 @@ export default function LandingPage() {
                       2
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">Get Expert Feedback</h3>
+                      <h3 className="font-semibold text-gray-900 mb-1">Get Expert AI-Powered Feedback</h3>
                       <p className="text-gray-600">
                         Receive detailed analysis on your strengths and areas to improve, based on feedback frameworks developed by our advisor team.
                       </p>
@@ -211,7 +211,7 @@ export default function LandingPage() {
               PA Mock Interviewer
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Practice speaking your answers and get expert feedback to ace your PA interview
+              Practice speaking your answers and get expert feedback from our AI to ace your PA interview
             </p>
           </div>
 
